@@ -12,7 +12,7 @@ api.all("*", function(req, res, next) {
 });
 
 api.get("/", function(req, res) {
-    res.render("app");
+    res.send("Web service Trabaja Perú (:");
 });
 
 api.post("/user", user);
