@@ -2,7 +2,6 @@
 const fs = require('fs');
 const config = require('../GlobalEnv');
 const helper = require('sendgrid').mail;
-const xl = require('excel4node');
 
 function ObjectResponse(params) {
     var dataResponse = {
