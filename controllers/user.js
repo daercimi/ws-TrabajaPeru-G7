@@ -1,6 +1,7 @@
 const Usuario = require("../models/Usuarios");
 const bcrypt = require("bcrypt");
 const dbConnection = require("../connect");
+const connect = require("../connect");
 const connection = dbConnection();
 
 
@@ -25,11 +26,14 @@ function registerUser(req, res) {
     const user = req.body.transaction;
     const saltRounds = 10;
     const newUsuario = new Usuario(user);
+    newUsuario.us_id = "kljdadjldjsajk"
 
-    bcrypt.hash(newUsuario.password, saltRounds).then((hash) => {
+    bcrypt.hash(newUsuario.us_contrasena, saltRounds).then((hash) => {
+        connection.connect()
         connection.query(
-            "INSERT INTO usuario values(?,?,?,?)", [newUsuario.id, newUsuario.nombre, newUsuario.email, hash],
+        "INSERT INTO Usuario (us_id,us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito,us_contrasena) values(?,?,?,?,?,?,?,?)" , [newUsuario.us_id,newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash],
             (err, result) => {
+                console.log(err)
                 if (err) {
                     return res.status(200).send({
                         status: "FAILED",
@@ -41,10 +45,15 @@ function registerUser(req, res) {
                         message: "Usuario registrado correctamente",
                     });
                 }
+                
             }
-        );
-
-    });
+            
+        )
+        console.log(connection.state)
+        ;
+    
+    },
+    );
 }
 
 function loginUser(req, res) {

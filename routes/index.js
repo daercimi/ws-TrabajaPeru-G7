@@ -15,7 +15,7 @@ api.all("*", function(req, res, next) {
 });
 
 api.get("/", function(req, res) {
-    res.send("Web service Trabaja Perú (:");
+    res.send("Web service Trabaja Perú");
 });
 
 //agregado por DAN
