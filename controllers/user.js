@@ -75,7 +75,7 @@ function loginUser(req, res) {
                 }
                 if (result.length > 0) {
                     try {
-                        bcrypt.compare(newUsuario.password, result[0].contrasenia,
+                        bcrypt.compare(newUsuario.us_contrasena, result[0].us_contrasena,
                             (err2, result2) => {
                                 if (err2) {
                                     return res.status(200).send({
@@ -85,7 +85,7 @@ function loginUser(req, res) {
                                 }
                                 if (result2) {
                                     const usr = result[0]
-                                    delete usr.contrasenia
+                                    delete usr.us_contrasena
                                     return res.status(200).send({
                                         status: "SUCCESS",
                                         message: "Usuario logeado correctamente",
