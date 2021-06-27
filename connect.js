@@ -1,4 +1,4 @@
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const GlobalEnv = require("./GlobalEnv");
 
 module.exports = () => {
@@ -8,7 +8,5 @@ module.exports = () => {
         port: GlobalEnv.portdb,
         password: GlobalEnv.passwordDb,
         database: GlobalEnv.database,
-        wait_timeout : 28800,
-        connect_timeout :10
     });
 };

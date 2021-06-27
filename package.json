@@ -25,7 +25,7 @@
         "method-override": "^3.0.0",
         "moment": "^2.29.1",
         "morgan": "^1.10.0",
-        "mysql": "^2.18.1",
+        "mysql2": "^2.2.5",
         "sendgrid": "^5.2.3",
         "v-calendar": "^2.2.2"
     },
