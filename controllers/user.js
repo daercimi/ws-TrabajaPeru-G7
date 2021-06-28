@@ -35,7 +35,7 @@ function registerUser(req, res) {
     bcrypt.hash(newUsuario.us_contrasena, saltRounds).then((hash) => {
         connection.connect()
         connection.query(
-        "INSERT INTO usuario (us_id,us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito,us_contrasena) values(?,?,?,?,?,?,?,?)" , [newUsuario.us_id,newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash],
+        "INSERT INTO Usuario (us_id,us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito,us_contrasena) values(?,?,?,?,?,?,?,?)" , [newUsuario.us_id,newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash],
             (err, result) => {
                 //console.log(err)
                 if (err) {
