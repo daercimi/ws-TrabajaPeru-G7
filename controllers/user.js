@@ -17,6 +17,9 @@ userOperation = function(req, res) {
         case "LOGIN_USER":
             loginUser(req, res);
             break;
+        case "SEARCH_USER":
+            searchUser(req, res);
+            break;
         default:
             return res.status(500).send({
                 status: "ERROR",
@@ -30,12 +33,12 @@ function registerUser(req, res) {
     const user = req.body.transaction;
     const saltRounds = 10;
     const newUsuario = new Usuario(user);
-    newUsuario.us_id = "kljdadjldjsajk5"
+    //newUsuario.us_id = 1
 
     bcrypt.hash(newUsuario.us_contrasena, saltRounds).then((hash) => {
         connection.connect()
         connection.query(
-        "INSERT INTO Usuario (us_id,us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito,us_contrasena) values(?,?,?,?,?,?,?,?)" , [newUsuario.us_id,newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash],
+        "INSERT INTO Usuario (us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito,us_contrasena) values(?,?,?,?,?,?,?)" , [newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash],
             (err, result) => {
                 //console.log(err)
                 if (err) {
@@ -107,4 +110,31 @@ function loginUser(req, res) {
         }
     );
 }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//BUSCAR USUARIO
+function searchUser(req, res) {
+    const userName = req.body.transaction;
+    connection.connect()
+    connection.query(
+        "SELECT * FROM Usuario",
+        //WHERE nombre LIKE %?%", [userName.nombre],
+        (err, result) => {
+            if (err) {
+                return res.status(200).send({
+                    status: "FAILED",
+                    message: err,
+                });
+            } else {
+                return res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Usuario encontrado",
+                });
+            }
+        }
+    );
+    console.log("Buscando a: " + userName.nombre);
+    res.send(`Buscando a: ${userName.nombre}`);
+}
+////////////////////////////////////////////////////////////////////////////////////////////////////
 module.exports = userOperation;
