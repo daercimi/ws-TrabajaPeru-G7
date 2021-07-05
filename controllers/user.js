@@ -20,6 +20,9 @@ userOperation = function(req, res) {
         case "SEARCH_USER":
             searchUser(req, res);
             break;
+        case "GET_USERS": //PARA EL HOME, los 10 más recientes usuarios
+            getUsers(res);
+            break;
         default:
             return res.status(500).send({
                 status: "ERROR",
@@ -137,4 +140,30 @@ function searchUser(req, res) {
     res.send(`Buscando a: ${userName.nombre}`);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+function getUsers(res) {
+
+    connection.connect()
+    connection.query(
+        "SELECT * FROM Usuario",
+        //WHERE nombre LIKE %?%", [userName.nombre],
+        (err, result) => {
+            if (err) {
+                return res.status(200).send({
+                    status: "FAILED",
+                    message: err,
+                });
+            } else {
+                return res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Usuario encontrado",
+                });
+            }
+        }
+    );
+    console.log("Buscando a: " + userName.nombre);
+    res.send(`Buscando a: ${userName.nombre}`);
+}
+
+
 module.exports = userOperation;
