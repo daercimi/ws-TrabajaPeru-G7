@@ -2,17 +2,14 @@ const Servicio = require("../models/Servicios");
 const dbConnection = require("../connect");
 const connect = require("../connect");
 const connection = dbConnection();
-const middleware = require("../middleware/auth");
+const auth = require("../middleware/auth");
 
-function validateUser(middleware){
-    /* La idea en esta función es que me devuelva el
-    us_id si el usuario está logeado, de lo contrario
-    que me devuelva null, luego ese us_id se usará para 
-    todo lo demás */
-}
+serviceOperation = function(req,res) {
 
+    console.log("flag1");
 
-serviceOperation = function(req,us_id,res) {
+    us_id = req.user.response.payload;
+    console.log("Valor de req.user en us_id: ", us_id)
 
     const command = req.body.command;
     switch(command){
@@ -27,9 +24,9 @@ serviceOperation = function(req,us_id,res) {
             }
             break;
 
-        case "SEARCH_SERVICE":
-            searchCategory(req,res);
-            break;
+        //case "SEARCH_SERVICE":
+        //    searchCategory(req,res);
+        //    break;
 
         case "EDIT_SERVICE":
             if(us_id == null){

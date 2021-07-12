@@ -3,18 +3,19 @@ const comun = require('../util/comun');
 const constant = require('../util/constant');
 
 function ensureAuthenticated(req, res, next) {
-  let deflang = comun.getLanguage(req.lang);
-  let lang = require(`../language/${deflang}`);
-  let params = [];
   if(!req.headers.authorization) {
-    params[0] = lang.mstrNotAuthorizationHeader.code
-    params[1] = constant.ResponseCode.error
-    params[2] = lang.mstrNotAuthorizationHeader.message
     return res
-      .status(401) //Unauthorized
-      .send(comun.ObjectResponse(params));
+    .status(401)
+    .send({
+      message: "Fallo de Autenticación."
+    }); //Unauthorized
   }
-  const token = req.headers.authorization.split(" ")[1];
+  stringtoken = req.headers.authorization.split(" ");
+  const token = stringtoken[1];
+
+  if(token == null){
+  }
+
   services.decodeToken(token)
     .then(response =>{
       req.user = response
@@ -29,7 +30,9 @@ function ensureAuthenticated(req, res, next) {
       params[2] = `${response.message}`
       return res
         .status(403)
-        .send(comun.ObjectResponse(params));
+        .send({
+          message: "Token expirado o inválido"
+        });
     })
 }
 
