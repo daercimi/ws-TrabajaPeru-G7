@@ -37,7 +37,6 @@ function decodeToken(token){
 			reject(params);
 		}
 	});
-
 	return decoded;
 }
 module.exports = {

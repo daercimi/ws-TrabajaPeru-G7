@@ -1,5 +1,6 @@
 const express = require("express");
 const user = require("../controllers/user");
+const service = require("../controllers/service");
 const api = express.Router();
 const dbConnection = require("../connect");
 const connection = dbConnection();
@@ -16,6 +17,10 @@ api.get("/", function(req, res) {
 });
 
 api.post("/user", user);
+
+//api.post("/servicenologgeado",service);
+api.post("/service",auth,service);
+
 api.post("/login", (req, res) => {
     res.send("Registrado");
 });

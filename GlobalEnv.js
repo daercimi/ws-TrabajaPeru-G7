@@ -9,4 +9,4 @@ module.exports = {
     passwordDb: process.env.PASSWORDDB || "6cbrNQwyDU",
     database: process.env.DATABASE || "sql10420317",
     TOKEN_SECRET: process.env.TOKEN_SECRET || "trabajaperu-access",
-};
+}; 
