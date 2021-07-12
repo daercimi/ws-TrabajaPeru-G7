@@ -132,12 +132,12 @@ function searchUser(req, res) {
                 return res.status(200).send({
                     status: "SUCCESS",
                     message: "Usuario encontrado",
+                    Buscando: `${userName.nombre}`
                 });
             }
         }
     );
     console.log("Buscando a: " + userName.nombre);
-    res.send(`Buscando a: ${userName.nombre}`);
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
