@@ -6,10 +6,8 @@ const auth = require("../middleware/auth");
 
 serviceOperation = function(req,res) {
 
-    console.log("flag1");
-
     us_id = req.user.response.payload;
-    console.log("Valor de req.user en us_id: ", us_id)
+    //console.log("Valor de us.id en controllers/service.js: ", us_id)
 
     const command = req.body.command;
     switch(command){
@@ -83,10 +81,10 @@ function validationCreateService(req,us_id,res) {
     */
 
     const user = us_id 
-    const service = req.body.transaction;
-    const newServicio = Servicio(user, service);
+    const service = req.body?.transaction;
+    const newServicio = new Servicio(user, service);
 
-    servicioExiste = serviceExists(newServicio.us_id,cat_id);
+    servicioExiste = serviceExists(newServicio.us_id,newServicio.cat_id);
 
     switch(servicioExiste){
         case -2:
