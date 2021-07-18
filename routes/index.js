@@ -1,11 +1,11 @@
 const express = require("express");
 const user = require("../controllers/user");
+const serviceAuth = require("../controllers/serviceAuth");
 const service = require("../controllers/service");
-const searchservices = require("../controllers/searchservices");
 const api = express.Router();
 const dbConnection = require("../connect");
 const connection = dbConnection();
-const auth = require("../middleware/auth")
+const auth = require("../middleware/auth");
 api.all("*", function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -19,9 +19,8 @@ api.get("/", function(req, res) {
 
 api.post("/user", user);
 
-//api.post("/servicenologgeado",service);
-api.post("/service",auth,service);
-api.post("/service/search",searchservices);
+api.post("/service-auth",auth,serviceAuth);
+api.get("/service",service);
 
 api.post("/login", (req, res) => {
     res.send("Registrado");
