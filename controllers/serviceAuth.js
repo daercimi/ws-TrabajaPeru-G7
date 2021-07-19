@@ -51,7 +51,7 @@ serviceOperation = function(req,res) {
 
 function validationCreateService(req,us_id,res) {
     const user = us_id 
-    const service = req.body?.transaction;
+    const service = req.body.transaction;
     const newServicio = new Servicio(user, service);
     return serviceExists(newServicio,res);
 
