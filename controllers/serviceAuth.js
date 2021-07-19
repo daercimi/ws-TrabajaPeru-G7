@@ -2,57 +2,43 @@ const Servicio = require("../models/Servicios");
 const dbConnection = require("../connect");
 const connect = require("../connect");
 const connection = dbConnection();
-const auth = require("../middleware/auth");
+
+function resFailed200(res, err){
+    return res
+    .status(200)
+    .send({
+        status: "FAILED",
+        message: err
+    })
+}
 
 serviceOperation = function(req,res) {
 
     us_id = req.user.response.payload;
-    //console.log("Valor de us.id en controllers/service.js: ", us_id)
+
+    if(us_id == null){
+        return res.status(200).send({
+            status: "ERROR",
+            message: "Servicios.js/serviceOperation() - CREATE_SERVICE: Usuario no loggeado",                    
+        })
+    }
 
     const command = req.body.command;
     switch(command){
         case "CREATE_SERVICE":
-            if(us_id == null){
-                return res.status(200).send({
-                    status: "ERROR",
-                    message: "Servicios.js/serviceOperation() - CREATE_SERVICE: Usuario no loggeado",                    
-                })
-            } else {
-                validationCreateService(req,us_id,res);
-            }
+            validationCreateService(req,us_id,res);
             break;
 
         case "EDIT_SERVICE":
-            if(us_id == null){
-                return res.status(200).send({
-                    status: "ERROR",
-                    message: "Servicios.js/serviceOperation() - EDIT_SERVICE: Usuario no loggeado",                    
-                })
-            } else {
-                editService(req,us_id,res);
-            }
+            editService(req,us_id,res);
             break;
 
         case "DELETE_SERVICE":
-            if(us_id == null){
-                return res.status(200).send({
-                    status: "ERROR",
-                    message: "Servicios.js/serviceOperation() - DELETE_SERVICE: Usuario no loggeado",                    
-                })
-            } else {
-                deleteService(req,us_id,res);
-            }
+            deleteService(req,us_id,res);
             break;
 
         case "GET_MY_SERVICES":
-            if(us_id == null){
-                return res.status(200).send({
-                    status: "ERROR",
-                    message: "Servicios.js/serviceOperation() - GET_MY_SERVICES: Usuario no loggeado",                    
-                })
-            } else {
-                getMyServices(us_id,res);
-            }
+            getMyServices(us_id,res);
             break;
 
         default:
@@ -110,10 +96,7 @@ function recoverService(newServicio,res){
     connection.query("UPDATE Servicio SET ser_descripcion = ?, ser_imagen = ?, ser_eliminado = 0 ;", [newServicio.ser_descripcion, newServicio.ser_imagen], (err, result) =>{
 
         if (err) {
-            return res.status(200).send({
-                status: "FAILED",
-                message: err,
-            });
+            return resFailed200(res, err)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -131,10 +114,7 @@ function createService(newServicio,res){
     (err, result) =>{
 
         if (err) {
-            return res.status(200).send({
-                status: "FAILED",
-                message: err,
-            });
+            return resFailed200(res, err)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -153,10 +133,7 @@ function editService(req,us_id,res){
     connection.query("UPDATE Servicio SET ser_descripcion = ?, ser_imagen = ? WHERE us_id = ? AND cat_id = ? ;", [service.ser_descripcion, service.ser_imagen,us_id,service.cat_id], (err, result) =>{
 
         if (err) {
-            return res.status(200).send({
-                status: "FAILED",
-                message: err,
-            });
+            return resFailed200(res, err)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -174,10 +151,7 @@ function deleteService(req,us_id,res){
     connection.connect();
     connection.query("UPDATE Servicio SET ser_eliminado = 1 WHERE us_id = ? AND cat_id = ?",[us_id,cat_id],(err, result) =>{
         if (err) {
-            return res.status(200).send({
-                status: "FAILED",
-                message: err,
-            });
+            return resFailed200(res, err)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -192,10 +166,7 @@ function getMyServices(us_id,res){
     connection.connect();
     connection.query("SELECT * FROM Servicio WHERE us_id = ? WHERE ser_eliminado = 0;",[us_id], (err,result) => {
         if (err) {
-            return res.status(200).send({
-                status: "FAILED",
-                message: err,
-            });
+            return resFailed200(res, err)
         } else {
             return res.status(200).send(JSON.stringify(result));
         }         

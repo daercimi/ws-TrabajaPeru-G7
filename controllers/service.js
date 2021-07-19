@@ -2,6 +2,15 @@ const dbConnection = require("../connect");
 const connect = require("../connect");
 const connection = dbConnection();
 
+function resFailed200(res, err){
+    return res
+    .status(200)
+    .send({
+        status: "FAILED",
+        message: err
+    })
+}
+
 serviceOperation = function(req,res) {
 
     const command = req.body.command;
@@ -12,7 +21,6 @@ serviceOperation = function(req,res) {
            break;
 
         case "GET_HOME_SERVICES":
-            //Los primeros 10 para el home
             getHomeServices(res);
             break;
 
@@ -33,11 +41,8 @@ function searchCategory(req, res) {
     connection.connect()
     connection.query("SELECT * FROM Categoria WHERE cat_nombre LIKE ? ;",[CatName], (err, result) => {
         if (err) {
-            return res.status(200).send({
-                status: "FAILED",
-                message: err,
-            });
-        } 
+            return resFailed200(res, err)
+        }
         if (Object.entries(result) == 0) {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -55,10 +60,7 @@ function searchService(cat_id, res){
 
     connection.query("SELECT * FROM Servicio WHERE cat_id = ? AND ser_eliminado = 0;", [cat_id], (err, result) => {
         if (err) {
-            return res.status(200).send({
-                status: "FAILED",
-                message: err,
-            });
+            return resFailed200(res, err)
         } else {
             return res.send(JSON.stringify(result))
         }
@@ -70,10 +72,7 @@ function getHomeServices(res){
     connection.connect();
     connection.query("SELECT * FROM Servicio WHERE ser_eliminado = 0 LIMIT 10;",(err, result) =>{
         if (err) {
-            return res.status(200).send({
-                status: "FAILED",
-                message: err,
-            });
+            return resFailed200(res, err) 
         } else {
             return res.status(200).send(JSON.stringify(result));
         }        

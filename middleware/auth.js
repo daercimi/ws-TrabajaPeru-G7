@@ -14,6 +14,11 @@ function ensureAuthenticated(req, res, next) {
   const token = stringtoken[1];
 
   if(token == null){
+    return res
+    .status(401)
+    .send({
+      message: "Fallo de Autenticación."
+    }); //Unauthorized
   }
 
   services.decodeToken(token)
