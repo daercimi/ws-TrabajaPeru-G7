@@ -70,7 +70,7 @@ function searchService(cat_id, res){
 function getHomeServices(res){
 
     connection.connect();
-    connection.query("SELECT * FROM Servicio WHERE ser_eliminado = 0 LIMIT 10;",(err, result) =>{
+    connection.query("SELECT * FROM Servicio WHERE ser_eliminado = 0 LIMIT 3;",(err, result) =>{
         if (err) {
             return resFailed200(res, err) 
         } else {
