@@ -145,7 +145,7 @@ function getUsers(res) {
 
     connection.connect()
     connection.query(
-        "SELECT * FROM Usuario",
+        "SELECT * FROM Usuario LIMIT 3;",
         //WHERE nombre LIKE %?%", [userName.nombre],
         (err, result) => {
             if (err) {
@@ -154,15 +154,10 @@ function getUsers(res) {
                     message: err,
                 });
             } else {
-                return res.status(200).send({
-                    status: "SUCCESS",
-                    message: "Usuario encontrado",
-                });
+                return res.status(200).send(JSON.stringify(result));
             }
         }
     );
-    console.log("Buscando a: " + userName.nombre);
-    res.send(`Buscando a: ${userName.nombre}`);
 }
 
 

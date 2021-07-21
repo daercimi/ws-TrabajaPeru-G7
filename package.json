@@ -4,7 +4,7 @@
     "description": "software SOE",
     "main": "index.js",
     "scripts": {
-        "test": "mocha test/ --exit",
+        "test": "mocha test/test.js --exit",
         "coverage": "nyc --reporter=lcov npm run test",
         "dev": "nodemon index.js",
         "start": "node index.js",
