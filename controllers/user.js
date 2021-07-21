@@ -145,8 +145,8 @@ function getUsers(res) {
 
     connection.connect()
     connection.query(
-        "SELECT * FROM Usuario",
-        //WHERE nombre LIKE %?%", [userName.nombre],
+        //Solo 3 para muestra visual, luego cambiar a 10 cuando se implementen animaciones en front
+        "SELECT * FROM Usuario LIMIT 3",
         (err, result) => {
             if (err) {
                 return res.status(200).send({
@@ -154,16 +154,8 @@ function getUsers(res) {
                     message: err,
                 });
             } else {
-                return res.status(200).send({
-                    status: "SUCCESS",
-                    message: "Usuario encontrado",
-                });
+                return res.status(200).send(JSON.stringify(result));
             }
         }
     );
-    console.log("Buscando a: " + userName.nombre);
-    res.send(`Buscando a: ${userName.nombre}`);
 }
-
-
-module.exports = userOperation;
