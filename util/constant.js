@@ -5,6 +5,13 @@ const ResponseCode = {
 	success : 'SUCCESS'
 }
 
+function generateresponse(params){
+	const Responsegenerated = {
+		status : params.status,
+		message : params.message
+	}
+}
+
 module.exports = {
 	ResponseCode
 }

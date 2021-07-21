@@ -13,16 +13,6 @@ function ObjectResponse(params) {
     return dataResponse;
 }
 
-function validateLanguage(lang) {
-    if (!lang) return false;
-    if (lang.trim() === "") return false;
-    if (fs.existsSync(`./language/${lang}.json`)) {
-        return true
-    } else {
-        return false
-    };
-}
-
 function getLanguage(lang) {
     if (validateLanguage(lang)) return lang
     else return "en"
