@@ -1,4 +1,8 @@
 'use strict'
+const Usuario = require("../models/Usuarios");
+const bcrypt = require("bcrypt");
+const dbConnection = require("../connect");
+const connection = dbConnection();
 
 function loginUser(req, res) {
     console.log(req.body);
@@ -47,14 +51,12 @@ function registerUser(req, res) {
     const user = req.body.transaction;
     const saltRounds = 10;
     const newUsuario = new Usuario(user);
-    //newUsuario.us_id = 1
 
     bcrypt.hash(newUsuario.us_contrasena, saltRounds).then((hash) => {
         connection.connect()
         connection.query(
         "INSERT INTO Usuario (us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito,us_contrasena) values(?,?,?,?,?,?,?)" , [newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash],
             (err, result) => {
-                //console.log(err)
                 if (err) {
                     return res.status(200).send({
                         status: "FAILED",
@@ -81,7 +83,6 @@ function searchUser(req, res) {
     connection.connect()
     connection.query(
         "SELECT * FROM Usuario",
-        //WHERE nombre LIKE %?%", [userName.nombre],
         (err, result) => {
             if (err) {
                 return res.status(200).send({
@@ -104,7 +105,6 @@ function getUsers(res) {
     connection.connect()
     connection.query(
         "SELECT * FROM Usuario",
-        //WHERE nombre LIKE %?%", [userName.nombre],
         (err, result) => {
             if (err) {
                 return res.status(200).send({
@@ -122,11 +122,33 @@ function getUsers(res) {
     console.log("Buscando a: " + userName.nombre);
     res.send(`Buscando a: ${userName.nombre}`);
 }
+function editUser(req,res) {
+    const user = req.user.response.payload;
+    const newUsuario = new Usuario(req.body.transaction);
+    connection.connect()
+    connection.query(
+        "UPDATE Usuarios SET (us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito) WHERE us_id = ? values(?,?,?,?,?,?,?) "[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito,user],
+        (err, result) => {
+            if (err) {
+                return res.status(200).send({
+                    status: "FAILED",
+                    message: err,
+                });
+            } else {
+                return res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Información de usuario modificada correctamente",
+                });
+            }
+        }
+    );
+}
 module.exports = {
 	loginUser,
 	registerUser,
 	searchUser,
-	getUsers
+	getUsers,
+    editUser
 
 
 }

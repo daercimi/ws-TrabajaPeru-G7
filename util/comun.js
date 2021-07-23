@@ -13,11 +13,6 @@ function ObjectResponse(params) {
     return dataResponse;
 }
 
-function getLanguage(lang) {
-    if (validateLanguage(lang)) return lang
-    else return "en"
-}
-
 function sendMail(to_email, subject, type, content, attachments = []) {
     var from_email = new helper.Email(config.sendgrid_from);
     var to_email = new helper.Email(to_email);
@@ -93,8 +88,6 @@ function validateUrl(url) {
 
 module.exports = {
     ObjectResponse,
-    validateLanguage,
-    getLanguage,
     sendMail,
     base64_encode,
     base64_decode,

@@ -1,6 +1,5 @@
 const Servicio = require("../models/Servicios");
 const dbConnection = require("../connect");
-const connect = require("../connect");
 const connection = dbConnection();
 
 function resFailed200(res, err){
@@ -11,7 +10,6 @@ function resFailed200(res, err){
         message: err
     })
 }
-
 serviceOperation = function(req,res) {
 
     us_id = req.user.response.payload;
