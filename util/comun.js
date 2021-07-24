@@ -3,6 +3,15 @@ const fs = require('fs');
 const config = require('../GlobalEnv');
 const helper = require('sendgrid').mail;
 
+function resFailed200(res, err){
+    return res
+    .status(200)
+    .send({
+        status: "FAILED",
+        message: err
+    })
+}
+
 function ObjectResponse(params) {
     var dataResponse = {
         "code": params[0],
@@ -93,5 +102,6 @@ module.exports = {
     base64_decode,
     evalObjectValue,
     validateEmail,
-    validateUrl
+    validateUrl,
+    resFailed200
 }

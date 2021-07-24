@@ -112,15 +112,10 @@ function getUsers(res) {
                     message: err,
                 });
             } else {
-                return res.status(200).send({
-                    status: "SUCCESS",
-                    message: "Usuario encontrado",
-                });
+                return res.status(200).send(JSON.stringify(result));
             }
         }
     );
-    console.log("Buscando a: " + userName.nombre);
-    res.send(`Buscando a: ${userName.nombre}`);
 }
 function editUser(req,res) {
     const user = req.user.response.payload;
