@@ -20,7 +20,7 @@ api.get("/", function(req, res) {
 api.post("/user", user);
 
 api.post("/service-auth",auth,serviceAuth);
-api.get("/service",service);
+api.post("/service",service);
 
 api.post("/login", (req, res) => {
     res.send("Registrado");
