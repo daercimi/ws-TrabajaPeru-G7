@@ -1,16 +1,7 @@
 const Servicio = require("../models/Servicios");
 const dbConnection = require("../connect");
-const connect = require("../connect");
 const connection = dbConnection();
-
-function resFailed200(res, err){
-    return res
-    .status(200)
-    .send({
-        status: "FAILED",
-        message: err
-    })
-}
+const utilServices = require("../util/user");
 
 serviceOperation = function(req,res) {
 
@@ -96,7 +87,7 @@ function recoverService(newServicio,res){
     connection.query("UPDATE Servicio SET ser_descripcion = ?, ser_imagen = ?, ser_eliminado = 0 ;", [newServicio.ser_descripcion, newServicio.ser_imagen], (err, result) =>{
 
         if (err) {
-            return resFailed200(res, err)
+            return utilServices.resFailed200(res, err)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -114,7 +105,7 @@ function createService(newServicio,res){
     (err, result) =>{
 
         if (err) {
-            return resFailed200(res, err)
+            return utilServices.resFailed200(res, err)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -133,7 +124,7 @@ function editService(req,us_id,res){
     connection.query("UPDATE Servicio SET ser_descripcion = ?, ser_imagen = ? WHERE us_id = ? AND cat_id = ? ;", [service.ser_descripcion, service.ser_imagen,us_id,service.cat_id], (err, result) =>{
 
         if (err) {
-            return resFailed200(res, err)
+            return utilServices.resFailed200(res, err)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -151,7 +142,7 @@ function deleteService(req,us_id,res){
     connection.connect();
     connection.query("UPDATE Servicio SET ser_eliminado = 1 WHERE us_id = ? AND cat_id = ?",[us_id,cat_id],(err, result) =>{
         if (err) {
-            return resFailed200(res, err)
+            return utilServices.resFailed200(res, err)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -166,7 +157,7 @@ function getMyServices(us_id,res){
     connection.connect();
     connection.query("SELECT * FROM Servicio WHERE us_id = ? WHERE ser_eliminado = 0;",[us_id], (err,result) => {
         if (err) {
-            return resFailed200(res, err)
+            return utilServices.resFailed200(res, err)
         } else {
             return res.status(200).send(JSON.stringify(result));
         }         
