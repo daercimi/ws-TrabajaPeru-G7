@@ -3,6 +3,15 @@ const fs = require('fs');
 const config = require('../GlobalEnv');
 const helper = require('sendgrid').mail;
 
+function resFailed200(res, err){
+    return res
+    .status(200)
+    .send({
+        status: "FAILED",
+        message: err
+    })
+}
+
 function ObjectResponse(params) {
     var dataResponse = {
         "code": params[0],
@@ -11,21 +20,6 @@ function ObjectResponse(params) {
         "Response": params[3]
     }
     return dataResponse;
-}
-
-function validateLanguage(lang) {
-    if (!lang) return false;
-    if (lang.trim() === "") return false;
-    if (fs.existsSync(`./language/${lang}.json`)) {
-        return true
-    } else {
-        return false
-    };
-}
-
-function getLanguage(lang) {
-    if (validateLanguage(lang)) return lang
-    else return "en"
 }
 
 function sendMail(to_email, subject, type, content, attachments = []) {
@@ -103,12 +97,11 @@ function validateUrl(url) {
 
 module.exports = {
     ObjectResponse,
-    validateLanguage,
-    getLanguage,
     sendMail,
     base64_encode,
     base64_decode,
     evalObjectValue,
     validateEmail,
-    validateUrl
+    validateUrl,
+    resFailed200
 }

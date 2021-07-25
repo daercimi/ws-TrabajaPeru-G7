@@ -7,9 +7,7 @@
         "test": "mocha test/test.js --exit",
         "coverage": "nyc --reporter=lcov npm run test",
         "dev": "nodemon index.js",
-        "start": "node index.js",
-        "build": "webpack --config webpack.config.js",
-        "builddev": "webpack --mode development"
+        "start": "node index.js"
     },
     "author": "Amezaga-code",
     "license": "ISC",
@@ -27,8 +25,7 @@
         "moment": "^2.29.1",
         "morgan": "^1.10.0",
         "mysql2": "^2.2.5",
-        "sendgrid": "^5.2.3",
-        "v-calendar": "^2.2.2"
+        "sendgrid": "^5.2.3"
     },
     "devDependencies": {
         "@babel/core": "^7.12.13",
