@@ -122,7 +122,7 @@ function editUser(req,res) {
     const newUsuario = new Usuario(req.body.transaction);
     connection.connect()
     connection.query(
-        "UPDATE Usuarios SET (us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito) WHERE us_id = ? values(?,?,?,?,?,?,?) "[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito,user],
+        "UPDATE Usuarios SET us_nombres = ?, us_celular = ?, us_departamento = ?, us_provincia = ?, us_distrito = ? WHERE us_id = ? ;",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito,user],
         (err, result) => {
             if (err) {
                 return res.status(200).send({
