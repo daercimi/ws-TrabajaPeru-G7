@@ -144,6 +144,4 @@ module.exports = {
 	searchUser,
 	getUsers,
     editUser
-
-
 }
