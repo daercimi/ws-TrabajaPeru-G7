@@ -17,8 +17,11 @@ userOperation = function(req, res) {
         case "LOGIN_USER":
             loginUser(req, res);
             break;
-        case "SEARCH_USER":
+        case "SEARCH_USER":         
             searchUser(req, res);
+            break;
+        case "RATE_USER": //Calificar usuario
+            rateUser(req, res);
             break;
         case "GET_USERS": //PARA EL HOME, los 10 más recientes usuarios
             getUsers(res);
@@ -120,8 +123,7 @@ function searchUser(req, res) {
     const userName = req.body.transaction;
     connection.connect()
     connection.query(
-        "SELECT * FROM Usuario",
-        //WHERE nombre LIKE %?%", [userName.nombre],
+        "SELECT * FROM Usuario Where us_nombres LIKE ?", [userName.nombre+'%'],    
         (err, result) => {
             if (err) {
                 return res.status(200).send({
@@ -132,13 +134,107 @@ function searchUser(req, res) {
                 return res.status(200).send({
                     status: "SUCCESS",
                     message: "Usuario encontrado",
-                    Buscando: `${userName.nombre}`
+                    Buscando: `${userName.nombre}`,
+                    resultado: result
                 });
             }
         }
     );
     console.log("Buscando a: " + userName.nombre);
-}
+}   
+
+
+//CALIFICAR TRATO DE CLIENTE
+function rateUser(req, res) {
+    const newUsuario = req.body.transaction;
+    connection.connect()
+
+    var consulta
+/*
+    function select(){    
+        connection.query(
+            "SELECT * FROM Usuario Where us_id = ?", [newUsuario.id],    
+            (err, result) => {
+                if (err) {
+                    return res.status(200).send({
+                        status: "FAILED",
+                        message: err,
+                    });
+                } else {
+                    consulta = result
+                    console.log(consulta)
+                    return res.status(200).send({
+                        status: "SUCCESS",
+                        message: "Obtengo usuario",
+                        Usuario: `${newUsuario.nombre}`,
+                        resultado: result
+                    });
+                }
+            }
+        );  
+        //connection.end  
+    }
+*/
+    function deleteUser(){
+        connection.query(
+            "DELETE FROM Usuario Where us_id = ?", [newUsuario.id],    
+            (err, result) => {
+                if (err) {
+                    return res.status(200).send({
+                        status: "FAILED",
+                        message: err,
+                    });
+                } else {
+                    return res.status(200).send({
+                        status: "SUCCESS",
+                        message: "Eliminado",
+                    });
+                }
+            }
+        );  
+    };
+
+    select();
+    deleteUser();
+
+
+    /*connection.query(
+        "DELETE * FROM Usuario Where us_id = ?", [newUsuario.id],    
+        (err, result) => {
+            if (err) {
+                return res.status(200).send({
+                    status: "FAILED",
+                    message: err,
+                });
+            } else {
+                return res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Eliminado",
+                });
+            }
+        }
+    );
+    connection.query(
+        "INSERT INTO Usuario VALUES", [newUsuario],    
+        (err, result) => {
+            if (err) {
+                return res.status(200).send({
+                    status: "FAILED",
+                    message: err,
+                });
+            } else {
+                return res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Eliminado",
+                });
+            }
+        }
+    );
+    console.log("Calificando a: " + newUsuario.nombre);*/
+}  
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function getUsers(res) {

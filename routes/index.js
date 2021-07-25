@@ -29,6 +29,9 @@ api.post("/login", (req, res) => {
 ///////////////////////////////////////////////////////////////
 //BUSCAR USUARIO
 api.post("/search/user", user);
+
+//CALIFICAR TRATO DE CLIENTE
+api.post("/user/rate", user);
 ///////////////////////////////////////////////////////////////
 
 module.exports = api;

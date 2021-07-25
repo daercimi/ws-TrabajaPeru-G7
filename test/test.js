@@ -2,6 +2,7 @@ const server = require("../index");
 const auth = require("../middleware/auth")
 const serviceAuth = require("../controllers/serviceAuth");
 const service = require("../controllers/service.js"); 
+const user = require("../controllers/user.js");
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
