@@ -4,7 +4,11 @@ const bcrypt = require("bcrypt");
 const dbConnection = require("../connect");
 const connection = dbConnection();
 const utilComun = require("./comun");
+<<<<<<< HEAD
 const { util } = require("chai");
+=======
+const services = require("../services/index")
+>>>>>>> 998c91c14fefad4cfc41fcb017d2b93ba94f1734
 
 function loginUser(req, res) {
     console.log(req.body);
@@ -28,6 +32,7 @@ function loginUser(req, res) {
                                     const usr = result[0]
                                     delete usr.us_contrasena
                                     return res.status(200).send({
+                                        token: services.createToken(usr),
                                         status: "SUCCESS",
                                         message: "Usuario logeado correctamente",
                                         transaction: usr
