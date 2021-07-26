@@ -8,12 +8,7 @@ function searchService(req, res) {
 
     connection.connect()
     connection.query("CALL searchService(?)",busq, (err, result) => {
-        if (err) {
-            return utilComun.resFailed200(res, err);
-        }
-        else {
-            return utilComun.stringifyResult(res,result);
-        }
+        utilComun.errResult(res, err,result,200,200);
     });
 }
 
@@ -21,11 +16,7 @@ function getHomeServices(res){
 
     connection.connect();
     connection.query("CALL GetHomeServices();",(err, result) =>{
-        if (err) {
-            return utilComun.resFailed200(res, err);
-        } else {
-            return utilComun.stringifyResult(res,result);
-        }        
+        utilComun.errResult(res, err,result,200,200);      
     });
 }
 
@@ -33,11 +24,7 @@ function getCategories(res){
 
     connection.connect();
     connection.query("CALL GetCategories();",(err, result) =>{
-        if (err) {
-            return utilComun.resFailed200(res, err);
-        } else {
-            return utilComun.stringifyResult(res,result);
-        }        
+        utilComun.errResult(res, err,result,200,200);      
     });
 }
 /****************
@@ -52,13 +39,13 @@ function createService(req,us_id,res){
     connection.connect();
     connection.query("CALL serviceExistance(?,?);",[newServicio.us_id,newServicio.cat_id], (err,result) =>{
         if (err) {
-            return utilComun.resFailed200(res, err) 
+            return utilComun.resFailed(res, err,200) 
         }
         else {
             var existencia = result[0][0].existe;
             connection.query("CALL createOrRecoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_id, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
                 if (err2) {
-                    return utilComun.resFailed200(res, err)  
+                    return utilComun.resFailed(res, err,200)  
                 }
                 else {
                     switch (existencia){
@@ -94,7 +81,7 @@ function editService(req,us_id,res){
     connection.connect();
     connection.query("CALL editService(?,?,?,?);", [us_id,service.cat_id,service.ser_descripcion, service.ser_imagen], (err, result) =>{
         if (err) {
-            return utilComun.resFailed200(res, err)
+            return utilComun.resFailed(res, err,200)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -111,7 +98,7 @@ function deleteService(req,us_id,res){
     connection.connect();
     connection.query("CALL deleteService(?,?);",[us_id,cat_id],(err, result) =>{
         if (err) {
-            return utilComun.resFailed200(res, err)
+            return utilComun.resFailed(res, err,200)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
@@ -125,11 +112,7 @@ function getMyServices(us_id,res){
 
     connection.connect();
     connection.query("CALL getMyServices(?);;",[us_id], (err,result) => {
-        if (err) {
-            return utilComun.resFailed200(res, err)
-        } else {
-            return utilComun.stringifyResult(res,result);
-        }         
+        utilComun.errResult(res, err,result,200,200);       
     });
 
 }
