@@ -1,6 +1,6 @@
 const server = require("../index");
 const auth = require("../middleware/auth")
-const serviceAuth = require("../controllers/serviceAuth");
+const serviceAuth = require("../controllers/serviceAuth.js");
 const service = require("../controllers/service.js"); 
 
 const chai = require("chai");
@@ -20,7 +20,11 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"CREATE_SERVICE",
-          transaction: {}
+          transaction: {
+            cat_id: 10,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
@@ -34,7 +38,10 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"EDIT_SERVICE",
-          transaction: {}
+          transaction: {
+            ser_descripcion: "test2",
+            ser_imagen: "link2"
+          }
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
@@ -61,8 +68,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .post("/service-auth",auth,serviceAuth)
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
-          command:"GET_MY_SERVICES",
-          transaction: {}
+          command:"GET_MY_SERVICES"
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
@@ -75,7 +81,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 
     it("Prueba del comando SEARCH_SERVICES" , function(done){
       chai.request(server)
-      .get("/service",service)
+      .post("/service",service)
       .send({
           command:"SEARCH_SERVICE",
           transaction: "nombre"
@@ -89,7 +95,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 
     it("Prueba del comando GET_HOME_SERVICES" , function(done){
       chai.request(server)
-      .get("/service",service)
+      .post("/service",service)
       .send({
           command:"GET_HOME_SERVICES"
       })

@@ -28,8 +28,8 @@ function ensureAuthenticated(req, res, next) {
     })
     .catch(response =>{
       var resp = new Object();
-      if(response.code === "0002") resp = lang.mstrExpiredToken;
-      if(response.code === "0003") resp = lang.mstrInvalidToken;
+      //if(response.code === "0002") resp = lang.mstrExpiredToken;
+      //if(response.code === "0003") resp = lang.mstrInvalidToken;
       params[0] = response.code
       params[1] = constant.ResponseCode.error
       params[2] = `${response.message}`
