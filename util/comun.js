@@ -94,6 +94,6 @@ module.exports = {
     validateEmail,
     validateUrl,
     resFailed,
-    stringifyResult,
+    sendResult,
     errResult
 }
