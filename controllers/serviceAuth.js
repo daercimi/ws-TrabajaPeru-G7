@@ -1,8 +1,8 @@
 const utilServices = require("../util/services");
 
-serviceOperation = function(req,res) {
+var serviceOperation = function(req,res) {
 
-    us_id = req.user.response.payload;
+    var us_id = req.user.response.payload;
 
     if(us_id == null){
         return res.status(200).send({

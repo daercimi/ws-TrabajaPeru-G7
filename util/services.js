@@ -12,7 +12,7 @@ function searchService(req, res) {
             return utilComun.resFailed200(res, err);
         }
         else {
-            return res.status(200).send(JSON.stringify(result));
+            return utilComun.stringifyResult(res,result);
         }
     });
 }
@@ -24,7 +24,7 @@ function getHomeServices(res){
         if (err) {
             return utilComun.resFailed200(res, err);
         } else {
-            return res.status(200).send(JSON.stringify(result));
+            return utilComun.stringifyResult(res,result);
         }        
     });
 }
@@ -36,7 +36,7 @@ function getCategories(res){
         if (err) {
             return utilComun.resFailed200(res, err);
         } else {
-            return res.status(200).send(JSON.stringify(result));
+            return utilComun.stringifyResult(res,result);
         }        
     });
 }
@@ -55,9 +55,9 @@ function createService(req,us_id,res){
             return utilComun.resFailed200(res, err) 
         }
         else {
-            existencia = result[0][0].existe;
-            connection.query("CALL createOrRecoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_id, newServicio.ser_descripcion, newServicio.ser_imagen],(err, result)=>{
-                if (err) {
+            var existencia = result[0][0].existe;
+            connection.query("CALL createOrRecoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_id, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
+                if (err2) {
                     return utilComun.resFailed200(res, err)  
                 }
                 else {
@@ -107,7 +107,7 @@ function editService(req,us_id,res){
 
 function deleteService(req,us_id,res){
 
-    cat_id = req.body.transaction.cat_id;
+    var cat_id = req.body.transaction.cat_id;
     connection.connect();
     connection.query("CALL deleteService(?,?);",[us_id,cat_id],(err, result) =>{
         if (err) {
@@ -128,7 +128,7 @@ function getMyServices(us_id,res){
         if (err) {
             return utilComun.resFailed200(res, err)
         } else {
-            return res.status(200).send(JSON.stringify(result));
+            return utilComun.stringifyResult(res,result);
         }         
     });
 

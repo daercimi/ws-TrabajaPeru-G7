@@ -1,5 +1,5 @@
 const serviceUser = require("../util/user")
-userOperation = function(req, res) {
+var userOperation = function(req, res) {
     const command = req.body.command;
     switch (command) {
         case "REGISTER_USER":

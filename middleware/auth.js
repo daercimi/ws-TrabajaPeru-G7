@@ -10,7 +10,7 @@ function ensureAuthenticated(req, res, next) {
       message: "Fallo de Autenticación."
     }); //Unauthorized
   }
-  stringtoken = req.headers.authorization.split(" ");
+  let stringtoken = req.headers.authorization.split(" ");
   const token = stringtoken[1];
 
   if(token == null){
@@ -27,7 +27,7 @@ function ensureAuthenticated(req, res, next) {
       next()
     })
     .catch(response =>{
-      var resp = new Object();
+      // var resp = new Object();
       //if(response.code === "0002") resp = lang.mstrExpiredToken;
       //if(response.code === "0003") resp = lang.mstrInvalidToken;
       params[0] = response.code

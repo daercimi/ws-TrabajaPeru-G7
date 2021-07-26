@@ -12,14 +12,20 @@ function resFailed200(res, err){
     })
 }
 
+function stringifyResult(res,result){
+   return res.status(200).send(JSON.stringify(result)); 
+}
+
+
+
 function ObjectResponse(params) {
-    var dataResponse = {
+    return {
         "code": params[0],
         "status": params[1],
         "message": params[2],
         "Response": params[3]
     }
-    return dataResponse;
+
 }
 
 function sendMail(to_email, subject, type, content, attachments = []) {
@@ -54,14 +60,12 @@ function sendMail(to_email, subject, type, content, attachments = []) {
 
 function evalObjectValue(object) {
     let keys = Object.keys(object);
-    let aux = false
     keys.forEach(key => {
         if (object[key] !== '') {
-            return aux = true
+            return true
         }
     });
-
-    return aux;
+    return false;
 }
 
 function base64_encode(file) {
@@ -103,5 +107,6 @@ module.exports = {
     evalObjectValue,
     validateEmail,
     validateUrl,
-    resFailed200
+    resFailed200,
+    stringifyResult
 }
