@@ -81,8 +81,6 @@ function validateUrl(url) {
 module.exports = {
     ObjectResponse,
     sendMail,
-    base64_encode,
-    base64_decode,
     evalObjectValue,
     validateEmail,
     validateUrl,
