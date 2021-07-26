@@ -3,20 +3,29 @@ const fs = require('fs');
 const config = require('../GlobalEnv');
 const helper = require('sendgrid').mail;
 
-function resFailed200(res, err){
+//Función para mandar error
+function resFailed(res, err, cod ){
     return res
-    .status(200)
+    .status(cod)
     .send({
         status: "FAILED",
         message: err
     })
 }
 
-function stringifyResult(res,result){
-   return res.status(200).send(JSON.stringify(result)); 
+//Función para mandar resultado
+function sendResult(res,result,cod){
+   return res.status(cod).send(result); 
 }
 
-
+//Función para tratael error o resultado
+function errResult(res, err, result,cod_err,cod_success){
+    if (err) {
+        return resFailed(res, err,cod_err)
+    } else {
+        return sendResult(res,result, cod_success);
+    }         
+}
 
 function ObjectResponse(params) {
     return {
@@ -29,10 +38,10 @@ function ObjectResponse(params) {
 }
 
 function sendMail(to_email, subject, type, content, attachments = []) {
-    var from_email = new helper.Email(config.sendgrid_from);
-    var to_email = new helper.Email(to_email);
-    var subject = subject;
-    var content = new helper.Content(type, content);
+    from_email = new helper.Email(config.sendgrid_from);
+    to_email = new helper.Email(to_email);
+    subject = subject;
+    content = new helper.Content(type, content);
     var mail = new helper.Mail(from_email, subject, to_email, content);
     attachments.forEach(fileattach => {
         var attachment = new helper.Attachment();
@@ -84,6 +93,7 @@ module.exports = {
     evalObjectValue,
     validateEmail,
     validateUrl,
-    resFailed200,
-    stringifyResult
+    resFailed,
+    sendResult,
+    errResult
 }

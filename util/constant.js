@@ -6,7 +6,7 @@ const ResponseCode = {
 }
 
 function generateresponse(params){
-	return Responsegenerated = {
+	return {
 		status : params.status,
 		message : params.message
 	}

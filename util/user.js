@@ -15,14 +15,14 @@ function loginUser(req, res) {
             if (err != null) {
             } else {
                 if (!result || result.length <= 0) {
-                    return utilComun.resFailed200(res,"No se encontro el usuario");
+                    return utilComun.resFailed(res,"No se encontro el usuario",200);
                 }
                 if (result.length > 0) {
                     try {
                         bcrypt.compare(newUsuario.us_contrasena, result[0].us_contrasena,
                             (err2, result2) => {
                                 if (err2) {
-                                    return utilComun.resFailed200(res,"La contraseña es incorrecta");
+                                    return utilComun.resFailed(res,"La contraseña es incorrecta",200);
                                 }
                                 if (result2) {
                                     const usr = result[0]
@@ -55,7 +55,7 @@ function registerUser(req, res) {
         "CALL registerUser(?,?,?,?,?,?,?,?)" , [newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash, newUsuario.us_imagen],
             (err, result) => {
                 if (err) {
-                    return utilComun.resFailed200(res,err);
+                    return utilComun.resFailed(res,err,200);
                 } else {
                     return res.status(200).send({
                         status: "SUCCESS",
@@ -79,7 +79,7 @@ function searchUser(req, res) {
         "CALL searchUser(?)",[userName],
         (err, result) => {
             if (err) {
-                return utilComun.resFailed200(res,err);
+                return utilComun.resFailed(res,err,200);
             } else {
                 return res.status(200).send({
                     status: "SUCCESS",
@@ -95,11 +95,7 @@ function getUsers(res) {
     connection.query(
         "CALL getHomeUsers();",
         (err, result) => {
-            if (err) {
-                return utilComun.resFailed200(res,err);
-            } else {
-                return utilComun.stringifyResult(res,result);
-            }
+            utilComun.errResult(res, err,result,200,200);
         }
     );
 }
@@ -110,12 +106,7 @@ function obtainUser(req,res) {
     connection.query(
         "CALL obtainUser(?);", [user],
         (err,result) => {
-            if(err) {
-                return utilComun.resFailed200(res,err);
-            }
-            else {
-                return utilComun.stringifyResult(res,result);
-            }
+            utilComun.errResult(res,err,result,200,200);
         }
     )
 }
