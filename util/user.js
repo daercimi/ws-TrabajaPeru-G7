@@ -10,7 +10,7 @@ function loginUser(req, res) {
     console.log(req.body);
     const newUsuario = new Usuario(req.body.transaction);
     connection.query(
-        "SELECT * FROM Usuario WHERE us_correo = ?", [newUsuario.us_correo],
+        "SELECT * FROM Usuario WHERE us_correo = ?;", [newUsuario.us_correo],
         (err, result) => {
             if (err != null) {
             } else {
