@@ -4,13 +4,6 @@ var serviceOperation = function(req,res) {
 
     var us_id = req.user.response.payload;
 
-    if(us_id == null){
-        return res.status(200).send({
-            status: "ERROR",
-            message: "Servicios.js/serviceOperation() - CREATE_SERVICE: Usuario no loggeado",                    
-        })
-    }
-
     const command = req.body.command;
     switch(command){
         case "CREATE_SERVICE":

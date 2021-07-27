@@ -9,10 +9,25 @@ const chaiHttp = require("chai-http");
 var expect = chai.expect;
 chai.use(chaiHttp);
 
+describe("PRUEBAS DEL BACK", () => {
 
-describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
+  describe("Pruebas Generales", ()=>{
 
-  describe("Pruebas del controlador de service.js", () => {
+      it("Prueba de 404 Not Found" , function(done){
+        chai.request(server)
+        .post("/cualquierruta")
+        .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+        .send({
+            command:"CUALQUIER_COMANDO"
+        })
+        .end(function (err, response){
+          expect(response).to.have.status(404);
+          done();
+        })
+      })
+  });
+
+  describe("Pruebas a serviceAuth", () => {
   
     it("Prueba del comando CREATE_SERVICE" , function(done){
       chai.request(server)
@@ -75,9 +90,21 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
         done();
       })
 
+    it("Prueba del comando por default" , function(done){
+      chai.request(server)
+      .post("/service-auth",service)
+      .send({
+          command:"CUALQUIER_COMANDO"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(500);
+        done();
+      })
     })
 
-  describe("Pruebas del controlador searchservices.js" , () => {
+    })
+
+  describe("Pruebas de service" , () => {
 
     it("Prueba del comando SEARCH_SERVICES" , function(done){
       chai.request(server)
@@ -101,6 +128,30 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando GET_CATEGORIES" , function(done){
+      chai.request(server)
+      .post("/service",service)
+      .send({
+          command:"GET_CATEGORIES"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando por default" , function(done){
+      chai.request(server)
+      .post("/service",service)
+      .send({
+          command:"CUALQUIER_COMANDO"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(500);
         done();
       })
     })
