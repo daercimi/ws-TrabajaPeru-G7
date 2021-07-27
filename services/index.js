@@ -6,7 +6,7 @@ function createToken(user){
 	const payload = {
 		"sub" : user.id,
 		"iat" : moment().unix(),
-		"exp": moment().add(1, "days").unix(),
+		"exp": moment().add(30, "days").unix(),
 	};
 	return jwt.encode(payload, config.TOKEN_SECRET);
 }
