@@ -6,11 +6,10 @@ Proyecto de curso Métodos Formales para Pruebas
 1. Instalar **Node.js**, ver [aqui](https://nodejs.org/es/download/package-manager/).
 2. Necesitamos la herramnienta **npm** que viene junto con Node.js. Para ver si estan ambos instalados 
 correctamente, correr en una terminal `node -v` y `npm -v`, respectivamente.
-3. Instalar **Loopback** globalmente corriendo en una termianl `npm install -g loopback-cli`.
-4. Debemos instalar **MongoDB**, ver [aqui](https://docs.mongodb.com/manual/administration/install-community/).
-5. Situados en la carpeta _'final'_ del código fuente, correr desde una terminal `npm install` para instalar 
+3. Debemos instalar **mysql**, ver [aqui](https://dev.mysql.com/doc/refman/8.0/en/installing.html).
+4. Situados en la carpeta _'sw-TrabajaPeru-G7'_ del código fuente, correr desde una terminal `npm install` para instalar 
 las dependencias que necesita el backend para funcionar correctamente.
-6. Situados en la carpeta _'client'_ del código fuente, correr desde una terminal `npm install` que necesita 
+5. Situados en la carpeta _'SWTrabajaPeru-G7/client'_ del código fuente, correr desde una terminal `npm install` que necesita 
 el frontend para funcionar correctamente.
 
 ## Cómo usar la app
@@ -101,7 +100,7 @@ empiece a correr, lo que es más común ver).
 
 ### Mecanismo provisto para operaciones CRUD
 
-Como detallamos previamente, Loopback nos provee de base las operaciones CRUD cuando generamos un modelo, y 
+Como detallamos previamente, express nos provee de base las operaciones CRUD cuando generamos un modelo, y 
 además nos expone los REST endpoints de la API del backend en el _routes_ integrado para poder ver bien qué 
 requerimiento http debemos mandar, a qué ruta y con qué parámetros, lo que es de gran ayuda a la hora de hacer 
 los CRUDs.
