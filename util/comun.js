@@ -20,6 +20,7 @@ function sendResult(res,result,cod){
 
 //Función para tratael error o resultado
 function errResult(res, err, result,cod_err,cod_success){
+    
     if (err) {
         return resFailed(res, err,cod_err)
     } else {

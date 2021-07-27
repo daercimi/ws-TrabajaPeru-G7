@@ -7,7 +7,6 @@ const utilComun = require("./comun");
 const services = require("../services/index")
 
 function loginUser(req, res) {
-    console.log(req.body);
     const newUsuario = new Usuario(req.body.transaction);
     connection.query(
         "SELECT * FROM Usuario WHERE us_correo = ?;", [newUsuario.us_correo],
@@ -95,7 +94,7 @@ function getUsers(res) {
     connection.query(
         "CALL getHomeUsers();",
         (err, result) => {
-            utilComun.errResult(res, err,result,200,200);
+            utilComun.errResult(res, err,result[0],200,200);
         }
     );
 }
