@@ -40,7 +40,6 @@ function ObjectResponse(params) {
 function sendMail(to_email, subject, type, content, attachments = []) {
     from_email = new helper.Email(config.sendgrid_from);
     to_email = new helper.Email(to_email);
-    subject = subject;
     content = new helper.Content(type, content);
     var mail = new helper.Mail(from_email, subject, to_email, content);
     attachments.forEach(fileattach => {
