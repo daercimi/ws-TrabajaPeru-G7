@@ -6,15 +6,15 @@ function createToken(user){
 	const payload = {
 		"sub" : user.id,
 		"iat" : moment().unix(),
-		"exp": moment().add(1, "days").unix(),
+		"exp": moment().add(30, "days").unix(),
 	};
 	return jwt.encode(payload, config.TOKEN_SECRET);
-};
+}
 
 function decodeToken(token){
 	let params = [];
 	params.code = 'ERROR'
-	const decoded = new Promise((resolve, reject) =>{
+	return new Promise((resolve, reject) =>{
 		try{
 			const payload = jwt.decode(token, config.TOKEN_SECRET);
 			if(payload.exp <= moment().unix()) {
@@ -37,7 +37,6 @@ function decodeToken(token){
 			reject(params);
 		}
 	});
-	return decoded;
 }
 module.exports = {
 	createToken,

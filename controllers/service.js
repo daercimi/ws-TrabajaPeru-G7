@@ -2,7 +2,7 @@ const dbConnection = require("../connect");
 const utilServices = require("../util/services");
 
 
-serviceOperation = function(req,res) {
+var serviceOperation = function(req,res) {
 
     const command = req.body.command;
     switch(command){

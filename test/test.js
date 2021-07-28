@@ -1,6 +1,6 @@
 const server = require("../index");
 const auth = require("../middleware/auth")
-const serviceAuth = require("../controllers/serviceAuth");
+const serviceAuth = require("../controllers/serviceAuth.js");
 const service = require("../controllers/service.js"); 
 const user = require("../controllers/user.js");
 
@@ -10,6 +10,7 @@ const chaiHttp = require("chai-http");
 var expect = chai.expect;
 chai.use(chaiHttp);
 
+describe("PRUEBAS DEL BACK", () => {
 
 describe("Pruebas de funcion Buscar usuario", function(done){
   it("Prueba JuanD" , function(done){
@@ -117,8 +118,23 @@ describe("Pruebas de funcion Buscar usuario", function(done){
 //////////////////////////////////////////////////////////////////////////
 
 describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
+  describe("Pruebas Generales", ()=>{
 
-  describe("Pruebas del controlador de service.js", () => {
+      it("Prueba de 404 Not Found" , function(done){
+        chai.request(server)
+        .post("/cualquierruta")
+        .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+        .send({
+            command:"CUALQUIER_COMANDO"
+        })
+        .end(function (err, response){
+          expect(response).to.have.status(404);
+          done();
+        })
+      })
+  });
+
+  describe("Pruebas a serviceAuth", () => {
   
     it("Prueba del comando CREATE_SERVICE" , function(done){
       chai.request(server)
@@ -126,7 +142,11 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"CREATE_SERVICE",
-          transaction: {}
+          transaction: {
+            cat_id: 10,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
@@ -140,7 +160,10 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"EDIT_SERVICE",
-          transaction: {}
+          transaction: {
+            ser_descripcion: "test2",
+            ser_imagen: "link2"
+          }
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
@@ -167,21 +190,33 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .post("/service-auth",auth,serviceAuth)
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
-          command:"GET_MY_SERVICES",
-          transaction: {}
+          command:"GET_MY_SERVICES"
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
         done();
       })
+
+    it("Prueba del comando por default" , function(done){
+      chai.request(server)
+      .post("/service-auth",service)
+      .send({
+          command:"CUALQUIER_COMANDO"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(500);
+        done();
+      })
     })
   })
 
-  describe("Pruebas del controlador searchservices.js" , () => {
+    })
+
+  describe("Pruebas de service" , () => {
 
     it("Prueba del comando SEARCH_SERVICES" , function(done){
       chai.request(server)
-      .get("/service",service)
+      .post("/service",service)
       .send({
           command:"SEARCH_SERVICE",
           transaction: "nombre"
@@ -195,7 +230,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 
     it("Prueba del comando GET_HOME_SERVICES" , function(done){
       chai.request(server)
-      .get("/service",service)
+      .post("/service",service)
       .send({
           command:"GET_HOME_SERVICES"
       })
@@ -204,5 +239,32 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
         done();
       })
     })
+
+    it("Prueba del comando GET_CATEGORIES" , function(done){
+      chai.request(server)
+      .post("/service",service)
+      .send({
+          command:"GET_CATEGORIES"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando por default" , function(done){
+      chai.request(server)
+      .post("/service",service)
+      .send({
+          command:"CUALQUIER_COMANDO"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(500);
+        done();
+      })
+    })
+
+  })
+
   })
 })

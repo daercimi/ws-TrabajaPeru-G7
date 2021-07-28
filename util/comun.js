@@ -3,30 +3,45 @@ const fs = require('fs');
 const config = require('../GlobalEnv');
 const helper = require('sendgrid').mail;
 
-function resFailed200(res, err){
+//Función para mandar error
+function resFailed(res, err, cod ){
     return res
-    .status(200)
+    .status(cod)
     .send({
         status: "FAILED",
         message: err
     })
 }
 
+//Función para mandar resultado
+function sendResult(res,result,cod){
+   return res.status(cod).send(result); 
+}
+
+//Función para tratael error o resultado
+function errResult(res, err, result,cod_err,cod_success){
+    
+    if (err) {
+        return resFailed(res, err,cod_err)
+    } else {
+        return sendResult(res,result, cod_success);
+    }         
+}
+
 function ObjectResponse(params) {
-    var dataResponse = {
+    return {
         "code": params[0],
         "status": params[1],
         "message": params[2],
         "Response": params[3]
     }
-    return dataResponse;
+
 }
 
 function sendMail(to_email, subject, type, content, attachments = []) {
-    var from_email = new helper.Email(config.sendgrid_from);
-    var to_email = new helper.Email(to_email);
-    var subject = subject;
-    var content = new helper.Content(type, content);
+    let from_email = new helper.Email(config.sendgrid_from);
+    to_email = new helper.Email(to_email);
+    content = new helper.Content(type, content);
     var mail = new helper.Mail(from_email, subject, to_email, content);
     attachments.forEach(fileattach => {
         var attachment = new helper.Attachment();
@@ -54,35 +69,12 @@ function sendMail(to_email, subject, type, content, attachments = []) {
 
 function evalObjectValue(object) {
     let keys = Object.keys(object);
-    let aux = false
     keys.forEach(key => {
         if (object[key] !== '') {
-            return aux = true
+            return true
         }
     });
-
-    return aux;
-}
-
-function base64_encode(file) {
-    // read binary data
-    var bitmap = fs.readFileSync(file);
-    // convert binary data to base64 encoded string
-    return new Buffer.from(bitmap).toString('base64');
-}
-
-// function to create file from base64 encoded string
-function base64_decode(base64str, file) {
-    // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
-    let mime = base64str.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
-    if (mime && mime.length) {
-        // Delete base64 identificator from String
-        base64str = base64str.replace(`data:${mime[1]};base64,`, '');
-    }
-    var bitmap = new Buffer.from(base64str, 'base64');
-    // write buffer to file
-    fs.writeFileSync(file, bitmap);
-    console.log('******** File created from base64 encoded string ********');
+    return false;
 }
 
 function validateEmail(email) {
@@ -98,10 +90,10 @@ function validateUrl(url) {
 module.exports = {
     ObjectResponse,
     sendMail,
-    base64_encode,
-    base64_decode,
     evalObjectValue,
     validateEmail,
     validateUrl,
-    resFailed200
+    resFailed,
+    sendResult,
+    errResult
 }

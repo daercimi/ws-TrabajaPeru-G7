@@ -6,12 +6,13 @@ const ResponseCode = {
 }
 
 function generateresponse(params){
-	const Responsegenerated = {
+	return {
 		status : params.status,
 		message : params.message
 	}
 }
 
 module.exports = {
-	ResponseCode
+	ResponseCode,
+	generateresponse
 }

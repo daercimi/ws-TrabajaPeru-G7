@@ -3,35 +3,31 @@ const Usuario = require("../models/Usuarios");
 const bcrypt = require("bcrypt");
 const dbConnection = require("../connect");
 const connection = dbConnection();
+const utilComun = require("./comun");
+const services = require("../services/index")
 
 function loginUser(req, res) {
-    console.log(req.body);
     const newUsuario = new Usuario(req.body.transaction);
     connection.query(
-        "SELECT * FROM Usuario WHERE us_correo = ?", [newUsuario.us_correo],
+        "SELECT * FROM Usuario WHERE us_correo = ?;", [newUsuario.us_correo],
         (err, result) => {
             if (err != null) {
             } else {
                 if (!result || result.length <= 0) {
-                    return res.status(200).send({
-                        status: "Failed",
-                        message: "No se encontro el usuario",
-                    });
+                    return utilComun.resFailed(res,"No se encontro el usuario",200);
                 }
                 if (result.length > 0) {
                     try {
                         bcrypt.compare(newUsuario.us_contrasena, result[0].us_contrasena,
                             (err2, result2) => {
                                 if (err2) {
-                                    return res.status(200).send({
-                                        status: "FAILED",
-                                        message: "La contraseña es incorrecta",
-                                    });
+                                    return utilComun.resFailed(res,"La contraseña es incorrecta",200);
                                 }
                                 if (result2) {
                                     const usr = result[0]
                                     delete usr.us_contrasena
                                     return res.status(200).send({
+                                        token: services.createToken(usr),
                                         status: "SUCCESS",
                                         message: "Usuario logeado correctamente",
                                         transaction: usr
@@ -55,13 +51,10 @@ function registerUser(req, res) {
     bcrypt.hash(newUsuario.us_contrasena, saltRounds).then((hash) => {
         connection.connect()
         connection.query(
-        "INSERT INTO Usuario (us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito,us_contrasena) values(?,?,?,?,?,?,?)" , [newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash],
+        "CALL registerUser(?,?,?,?,?,?,?,?)" , [newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash, newUsuario.us_imagen],
             (err, result) => {
                 if (err) {
-                    return res.status(200).send({
-                        status: "FAILED",
-                        message: err,
-                    });
+                    return utilComun.resFailed(res,err,200);
                 } else {
                     return res.status(200).send({
                         status: "SUCCESS",
@@ -82,13 +75,10 @@ function searchUser(req, res) {
     const userName = req.body.transaction;
     connection.connect()
     connection.query(
-        "SELECT * FROM Usuario",
+        "CALL searchUser(?)",[userName],
         (err, result) => {
             if (err) {
-                return res.status(200).send({
-                    status: "FAILED",
-                    message: err,
-                });
+                return utilComun.resFailed(res,err,200);
             } else {
                 return res.status(200).send({
                     status: "SUCCESS",
@@ -97,32 +87,35 @@ function searchUser(req, res) {
             }
         }
     );
-    console.log("Buscando a: " + userName.nombre);
-    res.send(`Buscando a: ${userName.nombre}`);
 }
 function getUsers(res) {
 
     connection.connect()
     connection.query(
-        "SELECT * FROM Usuario",
+        "CALL getHomeUsers();",
         (err, result) => {
-            if (err) {
-                return res.status(200).send({
-                    status: "FAILED",
-                    message: err,
-                });
-            } else {
-                return res.status(200).send(JSON.stringify(result));
-            }
+            utilComun.errResult(res, err,result[0],200,200);
         }
     );
 }
+
+function obtainUser(req,res) {
+    const user = req.user.response.payload;
+    connection.connect()
+    connection.query(
+        "CALL obtainUser(?);", [user],
+        (err,result) => {
+            utilComun.errResult(res,err,result,200,200);
+        }
+    )
+}
+
 function editUser(req,res) {
     const user = req.user.response.payload;
     const newUsuario = new Usuario(req.body.transaction);
     connection.connect()
     connection.query(
-        "UPDATE Usuarios SET (us_nombres,us_celular,us_correo,us_departamento,us_provincia,us_distrito) WHERE us_id = ? values(?,?,?,?,?,?,?) "[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito,user],
+        "CALL editUser(?,?,?,?,?,?,?,?);",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito,newUsuario.us_contrasena, newUsuario.us_imagen, user],
         (err, result) => {
             if (err) {
                 return res.status(200).send({
@@ -143,5 +136,6 @@ module.exports = {
 	registerUser,
 	searchUser,
 	getUsers,
-    editUser
+    editUser,
+    obtainUser
 }
