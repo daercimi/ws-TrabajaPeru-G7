@@ -128,7 +128,7 @@ function editUser(req,res) {
     const newUsuario = new Usuario(req.body.transaction);
     connection.connect()
     connection.query(
-        "CALL editUser(?,?,?,?,?,?,?,?);",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito,newUsuario.us_contrasena, newUsuario.us_imagen, user],
+        "CALL editUser(?,?,?,?,?,?,?);",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, newUsuario.us_imagen, user],
         (err, result) => {
             if (err) {
                 return res.status(200).send({
