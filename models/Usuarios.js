@@ -3,6 +3,7 @@ class Usuario {
 
     constructor(user) {
             this.us_id = user.us_id;
+            this.us_nombres = user.us_nombres;
             this.us_celular = user.us_celular;
             this.us_correo = user.us_correo;
             this.us_departamento = user.us_departamento;

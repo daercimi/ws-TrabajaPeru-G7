@@ -5,6 +5,7 @@ const dbConnection = require("../connect");
 const connection = dbConnection();
 const utilComun = require("./comun");
 const services = require("../services/index")
+const utilConstant = require("./constant")
 
 function loginUser(req, res) {
     const newUsuario = new Usuario(req.body.transaction);
@@ -56,10 +57,12 @@ function registerUser(req, res) {
                 if (err) {
                     return utilComun.resFailed(res,err,200);
                 } else {
-                    return res.status(200).send({
-                        status: "SUCCESS",
-                        message: "Usuario registrado correctamente",
-                    });
+                    return res.status(200).send(
+                        utilConstant.generateresponse({
+                            status: "SUCCESS",
+                            message: "Usuario registrado correctamente"
+                        })
+                    );
                 }
                 
             }
@@ -80,14 +83,24 @@ function searchUser(req, res) {
             if (err) {
                 return utilComun.resFailed(res,err,200);
             } else {
+                if (result[0].length == 0 ){
+                    return res.status(200).send({
+                        status: "SUCCESS",
+                        message: "No se encontraron resultados",
+                        resultado: result,
+                    });
+                }
                 return res.status(200).send({
                     status: "SUCCESS",
-                    message: "Usuario encontrado",
+                    message: "Búsqueda existosa",
+                    resultado: result,
                 });
+                
             }
         }
     );
 }
+
 function getUsers(res) {
 
     connection.connect()

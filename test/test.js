@@ -2,6 +2,7 @@ const server = require("../index");
 const auth = require("../middleware/auth")
 const serviceAuth = require("../controllers/serviceAuth.js");
 const service = require("../controllers/service.js"); 
+const user = require("../controllers/user.js");
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
@@ -11,6 +12,178 @@ chai.use(chaiHttp);
 
 describe("PRUEBAS DEL BACK", () => {
 
+  describe("PRUEBAS DE CONTROLADORES DE USUARIOS", () => {
+    
+    it("Prueba del comando REGISTER_USER" , function(done){
+      chai.request(server)
+      .post("/user",user)
+      .send({
+        command : "REGISTER_USER",
+        transaction : {
+            us_nombres : "Juan Diego",
+            us_celular : "968200448",
+            us_correo : "juan.perez@.gmail.com",
+            us_departamento : "Lima",
+            us_provincia : "Lima",
+            us_distrito : "",
+            us_contrasena : "unmsm",
+            us_imagen : ""
+        }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    
+    it("Prueba del comando LOGIN_USER" , function(done){
+      chai.request(server)
+      .post("/user",user)
+      .send({
+        command : "LOGIN_USER",
+        transaction : {
+            us_correo : "juan.perez@.gmail.com",
+            us_contrasena : "unmsm"
+        }  
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba no existe usuario LOGIN_USER" , function(done){
+      chai.request(server)
+      .post("/user",user)
+      .send({
+        command : "LOGIN_USER",
+        transaction : {
+            us_correo : "v gjkrsealrkcmslkrea",
+            us_contrasena : "unmsm"
+        }  
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba contraseña incorrecta LOGIN_USER" , function(done){
+      chai.request(server)
+      .post("/user",user)
+      .send({
+        command : "LOGIN_USER",
+        transaction : {
+            us_correo : "juan.perez@.gmail.com",
+            us_contrasena : "gaaaaa"
+        }  
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+
+    it("Prueba del comando SEARCH_USER" , function(done){
+      chai.request(server)
+      .post("/search/user",user)
+      .send({
+        command : "SEARCH_USER",
+        transaction : "Arian"
+        
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba no exite usuario SEARCH_USER" , function(done){
+      chai.request(server)
+      .post("/search/user",user)
+      .send({
+        command : "SEARCH_USER",
+        transaction : "njr;ktsntjkernfcjse;"
+        
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba error comando SEARCH_USER" , function(done){
+      chai.request(server)
+      .post("/search/user",user)
+      .send({
+        command : "SEARCH_USER",
+        transaction : {
+          nombre: "Arian"
+        }
+        
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando GET_USERS" , function(done){
+      chai.request(server)
+      .post("/user",user)
+      .send({
+          command:"GET_USERS"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando OBTAIN_USER" , function(done){
+      chai.request(server)
+      .post("/user")
+      .send({
+          command:"OBTAIN_USER"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(404);
+        done();
+      })
+    })
+    
+    it("Prueba del comando EDIT_USER" , function(done){
+      chai.request(server)
+      .post("/user-auth")
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"EDIT_USER"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(404);
+        done();
+      })
+    })
+    
+
+    it("Prueba del comando por default" , function(done){
+      chai.request(server)
+      .post("/service",service)
+      .send({
+          command:"CUALQUIER_COMANDO"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(500);
+        done();
+      })
+    })
+    
+  })
+  /////////////////////////////////////////////////////////////////////////////
+
+describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
   describe("Pruebas Generales", ()=>{
 
       it("Prueba de 404 Not Found" , function(done){
@@ -101,6 +274,7 @@ describe("PRUEBAS DEL BACK", () => {
         done();
       })
     })
+  })
 
     })
 
