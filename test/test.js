@@ -12,6 +12,32 @@ chai.use(chaiHttp);
 
 describe("PRUEBAS DEL BACK", () => {
 
+  describe("Pruebas Generales", ()=>{
+
+    it("Prueba de 404 Not Found" , function(done){
+      chai.request(server)
+      .post("/cualquierruta")
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"CUALQUIER_COMANDO"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(404);
+        done();
+      })
+    })
+
+    it("Prueba del index" , function(done){
+      chai.request(server)
+      .get("/")
+      .end(function (err, response){
+        expect(response).to.have.property('text',"Web service Trabaja Perú");
+        done();
+      })
+    })
+});
+
+
   describe("PRUEBAS DE CONTROLADORES DE USUARIOS", () => {
     
     it("Prueba del comando REGISTER_USER" , function(done){
@@ -59,7 +85,7 @@ describe("PRUEBAS DEL BACK", () => {
       .send({
         command : "LOGIN_USER",
         transaction : {
-            us_correo : "v gjkrsealrkcmslkrea",
+            us_correo : "vgjkrsealrkcmslkrea",
             us_contrasena : "unmsm"
         }  
       })
@@ -80,6 +106,10 @@ describe("PRUEBAS DEL BACK", () => {
         }  
       })
       .end(function (err, response){
+        if(err){
+          expect(err).to.have.status(200);
+          done();
+        }
         expect(response).to.have.status(200);
         done();
       })
@@ -144,12 +174,13 @@ describe("PRUEBAS DEL BACK", () => {
 
     it("Prueba del comando OBTAIN_USER" , function(done){
       chai.request(server)
-      .post("/user")
+      .post("/user-auth")
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"OBTAIN_USER"
       })
       .end(function (err, response){
-        expect(response).to.have.status(404);
+        expect(response).to.have.status(200);
         done();
       })
     })
@@ -159,10 +190,18 @@ describe("PRUEBAS DEL BACK", () => {
       .post("/user-auth")
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
-          command:"EDIT_USER"
+          command:"EDIT_USER",
+          transaction:{
+            us_nombres:"nombre editado",
+            us_celular:987654321,
+            us_departamento:"Lima",
+            us_provincia:"Lima",
+            us_distrito:"Lima",
+            us_imagen:"link editado"
+          }
       })
       .end(function (err, response){
-        expect(response).to.have.status(404);
+        expect(response).to.have.status(200);
         done();
       })
     })
@@ -184,21 +223,6 @@ describe("PRUEBAS DEL BACK", () => {
   /////////////////////////////////////////////////////////////////////////////
 
 describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
-  describe("Pruebas Generales", ()=>{
-
-      it("Prueba de 404 Not Found" , function(done){
-        chai.request(server)
-        .post("/cualquierruta")
-        .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-        .send({
-            command:"CUALQUIER_COMANDO"
-        })
-        .end(function (err, response){
-          expect(response).to.have.status(404);
-          done();
-        })
-      })
-  });
 
   describe("Pruebas a serviceAuth", () => {
   

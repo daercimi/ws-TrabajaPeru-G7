@@ -8,7 +8,7 @@ function searchService(req, res) {
 
     connection.connect()
     connection.query("CALL searchService(?)",busq, (err, result) => {
-        utilComun.errResult(res, err,result,200,200);
+        utilComun.errResult(res, err,result[0],200,200);
     });
 }
 
@@ -16,7 +16,7 @@ function getHomeServices(res){
 
     connection.connect();
     connection.query("CALL GetHomeServices();",(err, result) =>{
-        utilComun.errResult(res, err,result[0],200,200);      
+        utilComun.errResult(res, err,result[0][0],200,200);      
     });
 }
 
@@ -24,7 +24,7 @@ function getCategories(res){
 
     connection.connect();
     connection.query("CALL GetCategories();",(err, result) =>{
-        utilComun.errResult(res, err,result,200,200);      
+        utilComun.errResult(res, err,result[0],200,200);      
     });
 }
 /****************

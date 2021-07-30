@@ -21,9 +21,6 @@ function loginUser(req, res) {
                     try {
                         bcrypt.compare(newUsuario.us_contrasena, result[0].us_contrasena,
                             (err2, result2) => {
-                                if (err2) {
-                                    return utilComun.resFailed(res,"La contraseña es incorrecta",200);
-                                }
                                 if (result2) {
                                     const usr = result[0]
                                     delete usr.us_contrasena
@@ -33,6 +30,9 @@ function loginUser(req, res) {
                                         message: "Usuario logeado correctamente",
                                         transaction: usr
                                     });
+                                }
+                                else{
+                                    return utilComun.resFailed(res,"La contraseña es incorrecta",200);
                                 }
                             }
                         );
