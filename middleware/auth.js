@@ -27,9 +27,6 @@ function ensureAuthenticated(req, res, next) {
       next()
     })
     .catch(response =>{
-      params[0] = response.code
-      params[1] = constant.ResponseCode.error
-      params[2] = `${response.message}`
       return res
         .status(403)
         .send({

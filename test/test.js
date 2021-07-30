@@ -3,6 +3,7 @@ const auth = require("../middleware/auth")
 const serviceAuth = require("../controllers/serviceAuth.js");
 const service = require("../controllers/service.js"); 
 const user = require("../controllers/user.js");
+const userAuth = require("../controllers/userAuth.js");
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
@@ -35,6 +36,60 @@ describe("PRUEBAS DEL BACK", () => {
         done();
       })
     })
+
+    it("Prueba de fallo en autenticación por falta de authorization" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 10,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(401);
+        done();
+      })
+    })
+
+    it("Prueba de fallo en autenticación por error en authorization" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 10,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(401);
+        done();
+      })
+    })
+
+    it("Prueba de fallo en token invalido o expirado" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJkUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 10,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(403);
+        done();
+      })
+    })
+
 });
 
 
@@ -174,7 +229,7 @@ describe("PRUEBAS DEL BACK", () => {
 
     it("Prueba del comando OBTAIN_USER" , function(done){
       chai.request(server)
-      .post("/user-auth")
+      .post("/user-auth",auth,userAuth)
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"OBTAIN_USER"
@@ -187,7 +242,7 @@ describe("PRUEBAS DEL BACK", () => {
     
     it("Prueba del comando EDIT_USER" , function(done){
       chai.request(server)
-      .post("/user-auth")
+      .post("/user-auth",auth,userAuth)
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"EDIT_USER",
@@ -209,7 +264,8 @@ describe("PRUEBAS DEL BACK", () => {
 
     it("Prueba del comando por default" , function(done){
       chai.request(server)
-      .post("/service",service)
+      .post("/user-auth",auth,userAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"CUALQUIER_COMANDO"
       })
@@ -289,7 +345,8 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 
     it("Prueba del comando por default" , function(done){
       chai.request(server)
-      .post("/service-auth",service)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"CUALQUIER_COMANDO"
       })
