@@ -37,7 +37,7 @@ function ObjectResponse(params) {
     }
 
 }
-
+/*
 function sendMail(to_email, subject, type, content, attachments = []) {
     let from_email = new helper.Email(config.sendgrid_from);
     to_email = new helper.Email(to_email);
@@ -76,7 +76,7 @@ function evalObjectValue(object) {
     });
     return false;
 }
-
+*/
 function validateEmail(email) {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(String(email).toLowerCase());
@@ -89,8 +89,8 @@ function validateUrl(url) {
 
 module.exports = {
     ObjectResponse,
-    sendMail,
-    evalObjectValue,
+/*    sendMail,
+    evalObjectValue, */
     validateEmail,
     validateUrl,
     resFailed,

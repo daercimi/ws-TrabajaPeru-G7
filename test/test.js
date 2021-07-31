@@ -281,11 +281,28 @@ describe("PRUEBAS DEL BACK", () => {
 describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 
   describe("Pruebas a serviceAuth", () => {
+
+    it("Prueba del CREATE_SERVICE failed SQL" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
   
     it("Prueba del comando CREATE_SERVICE" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
       .send({
           command:"CREATE_SERVICE",
           transaction: {
@@ -299,11 +316,47 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
         done();
       })
     })
+
+    it("Prueba del comando CREATE_SERVICE eliminado" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 4,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando CREATE_SERVICE no existente" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 3,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
   
     it("Prueba del comando EDIT_SERVICE" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
       .send({
           command:"EDIT_SERVICE",
           transaction: {
