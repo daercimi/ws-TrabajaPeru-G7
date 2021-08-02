@@ -8,7 +8,7 @@ function searchService(req, res) {
 
     connection.connect()
     connection.query("CALL searchService(?)",busq, (err, result) => {
-        utilComun.errResult(res, err,result,200,200);
+        utilComun.errResult(res, err,result[0],200,200);
     });
 }
 
@@ -24,7 +24,7 @@ function getCategories(res){
 
     connection.connect();
     connection.query("CALL GetCategories();",(err, result) =>{
-        utilComun.errResult(res, err,result,200,200);      
+        utilComun.errResult(res, err,result[0],200,200);      
     });
 }
 /****************
@@ -45,7 +45,7 @@ function createService(req,us_id,res){
             var existencia = result[0][0].existe;
             connection.query("CALL createOrRecoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_id, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
                 if (err2) {
-                    return utilComun.resFailed(res, err,200)  
+                    return utilComun.resFailed(res, err2,200)  
                 }
                 else {
                     switch (existencia){
@@ -112,7 +112,7 @@ function getMyServices(us_id,res){
 
     connection.connect();
     connection.query("CALL getMyServices(?);;",[us_id], (err,result) => {
-        utilComun.errResult(res, err,result,200,200);       
+        utilComun.errResult(res, err,result[0],200,200);       
     });
 
 }

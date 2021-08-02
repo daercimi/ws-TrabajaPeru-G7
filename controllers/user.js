@@ -1,5 +1,5 @@
 const utilUser = require("../util/user")
-userOperation = function(req, res) {
+const userOperation = function(req, res) {
     const command = req.body.command;
     switch (command) {
         case "REGISTER_USER":
@@ -16,9 +16,6 @@ userOperation = function(req, res) {
             break;
         case "GET_USERS": //PARA EL HOME, los 10 más recientes usuarios
             utilUser.getUsers(res);
-            break;
-        case "OBTAIN_USER": 
-            utilUser.obtainUser(res);
             break;
         default:
             return res.status(500).send({

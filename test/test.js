@@ -3,6 +3,7 @@ const auth = require("../middleware/auth")
 const serviceAuth = require("../controllers/serviceAuth.js");
 const service = require("../controllers/service.js"); 
 const user = require("../controllers/user.js");
+const userAuth = require("../controllers/userAuth.js");
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
@@ -11,6 +12,86 @@ var expect = chai.expect;
 chai.use(chaiHttp);
 
 describe("PRUEBAS DEL BACK", () => {
+
+  describe("Pruebas Generales", ()=>{
+
+    it("Prueba de 404 Not Found" , function(done){
+      chai.request(server)
+      .post("/cualquierruta")
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"CUALQUIER_COMANDO"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(404);
+        done();
+      })
+    })
+
+    it("Prueba del index" , function(done){
+      chai.request(server)
+      .get("/")
+      .end(function (err, response){
+        expect(response).to.have.property('text',"Web service Trabaja Perú");
+        done();
+      })
+    })
+
+    it("Prueba de fallo en autenticación por falta de authorization" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 10,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(401);
+        done();
+      })
+    })
+
+    it("Prueba de fallo en autenticación por error en authorization" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 10,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(401);
+        done();
+      })
+    })
+
+    it("Prueba de fallo en token invalido o expirado" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJkUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 10,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(403);
+        done();
+      })
+    })
+
+});
+
 
   describe("PRUEBAS DE CONTROLADORES DE USUARIOS", () => {
     
@@ -59,7 +140,7 @@ describe("PRUEBAS DEL BACK", () => {
       .send({
         command : "LOGIN_USER",
         transaction : {
-            us_correo : "v gjkrsealrkcmslkrea",
+            us_correo : "vgjkrsealrkcmslkrea",
             us_contrasena : "unmsm"
         }  
       })
@@ -80,6 +161,10 @@ describe("PRUEBAS DEL BACK", () => {
         }  
       })
       .end(function (err, response){
+        if(err){
+          expect(err).to.have.status(200);
+          done();
+        }
         expect(response).to.have.status(200);
         done();
       })
@@ -144,25 +229,34 @@ describe("PRUEBAS DEL BACK", () => {
 
     it("Prueba del comando OBTAIN_USER" , function(done){
       chai.request(server)
-      .post("/user")
+      .post("/user-auth",auth,userAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"OBTAIN_USER"
       })
       .end(function (err, response){
-        expect(response).to.have.status(404);
+        expect(response).to.have.status(200);
         done();
       })
     })
     
     it("Prueba del comando EDIT_USER" , function(done){
       chai.request(server)
-      .post("/user-auth")
+      .post("/user-auth",auth,userAuth)
       .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
-          command:"EDIT_USER"
+          command:"EDIT_USER",
+          transaction:{
+            us_nombres:"nombre editado",
+            us_celular:987654321,
+            us_departamento:"Lima",
+            us_provincia:"Lima",
+            us_distrito:"Lima",
+            us_imagen:"link editado"
+          }
       })
       .end(function (err, response){
-        expect(response).to.have.status(404);
+        expect(response).to.have.status(200);
         done();
       })
     })
@@ -170,7 +264,8 @@ describe("PRUEBAS DEL BACK", () => {
 
     it("Prueba del comando por default" , function(done){
       chai.request(server)
-      .post("/service",service)
+      .post("/user-auth",auth,userAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
       .send({
           command:"CUALQUIER_COMANDO"
       })
@@ -184,28 +279,30 @@ describe("PRUEBAS DEL BACK", () => {
   /////////////////////////////////////////////////////////////////////////////
 
 describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
-  describe("Pruebas Generales", ()=>{
-
-      it("Prueba de 404 Not Found" , function(done){
-        chai.request(server)
-        .post("/cualquierruta")
-        .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-        .send({
-            command:"CUALQUIER_COMANDO"
-        })
-        .end(function (err, response){
-          expect(response).to.have.status(404);
-          done();
-        })
-      })
-  });
 
   describe("Pruebas a serviceAuth", () => {
+
+    it("Prueba del CREATE_SERVICE failed SQL" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
   
     it("Prueba del comando CREATE_SERVICE" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
       .send({
           command:"CREATE_SERVICE",
           transaction: {
@@ -219,11 +316,47 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
         done();
       })
     })
+
+    it("Prueba del comando CREATE_SERVICE eliminado" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 4,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando CREATE_SERVICE no existente" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_id: 3,
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
   
     it("Prueba del comando EDIT_SERVICE" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
       .send({
           command:"EDIT_SERVICE",
           transaction: {
@@ -262,10 +395,12 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
         expect(response).to.have.status(200);
         done();
       })
+    })
 
     it("Prueba del comando por default" , function(done){
       chai.request(server)
-      .post("/service-auth",service)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
       .send({
           command:"CUALQUIER_COMANDO"
       })
@@ -274,9 +409,10 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
         done();
       })
     })
+
   })
 
-    })
+   
 
   describe("Pruebas de service" , () => {
 

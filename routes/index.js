@@ -24,10 +24,6 @@ api.post("/user-auth",auth,userAuth);
 api.post("/service-auth",auth,serviceAuth);
 api.post("/service",service);
 
-api.post("/login", (req, res) => {
-    res.send("Registrado");
-});
-
 ///////////////////////////////////////////////////////////////
 //BUSCAR USUARIO
 api.post("/search/user", user);

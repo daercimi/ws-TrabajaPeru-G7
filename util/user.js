@@ -21,9 +21,6 @@ function loginUser(req, res) {
                     try {
                         bcrypt.compare(newUsuario.us_contrasena, result[0].us_contrasena,
                             (err2, result2) => {
-                                if (err2) {
-                                    return utilComun.resFailed(res,"La contraseña es incorrecta",200);
-                                }
                                 if (result2) {
                                     const usr = result[0]
                                     delete usr.us_contrasena
@@ -33,6 +30,9 @@ function loginUser(req, res) {
                                         message: "Usuario logeado correctamente",
                                         transaction: usr
                                     });
+                                }
+                                else{
+                                    return utilComun.resFailed(res,"La contraseña es incorrecta",200);
                                 }
                             }
                         );
@@ -118,7 +118,7 @@ function obtainUser(req,res) {
     connection.query(
         "CALL obtainUser(?);", [user],
         (err,result) => {
-            utilComun.errResult(res,err,result,200,200);
+            utilComun.errResult(res,err,result[0][0],200,200);
         }
     )
 }
@@ -128,7 +128,7 @@ function editUser(req,res) {
     const newUsuario = new Usuario(req.body.transaction);
     connection.connect()
     connection.query(
-        "CALL editUser(?,?,?,?,?,?,?,?);",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito,newUsuario.us_contrasena, newUsuario.us_imagen, user],
+        "CALL editUser(?,?,?,?,?,?,?);",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, newUsuario.us_imagen, user],
         (err, result) => {
             if (err) {
                 return res.status(200).send({
