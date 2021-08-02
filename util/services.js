@@ -129,6 +129,7 @@ function getCategories(us_id,res){
 
     connection.connect();
     connection.query("CALL GetCategories(?);",[us_id],(err, result) =>{
+        console.log(result[0]);
         utilComun.errResult(res, err,result[0],200,200);      
     });
 
