@@ -20,6 +20,15 @@ function getHomeServices(res){
     });
 }
 
+function obtainService(us_id,res){
+
+    connection.connect();
+    connection.query("CALL obtainService(?);",[us_id],(err, result) =>{
+        utilComun.errResult(res, err,result,200,200);      
+    });
+
+}
+
 /****************
 -----------------
 ------AUTH-------
@@ -120,10 +129,11 @@ function getCategories(us_id,res){
 
     connection.connect();
     connection.query("CALL GetCategories(?);",[us_id],(err, result) =>{
-        utilComun.errResult(res, err,result,200,200);      
+        utilComun.errResult(res, err,result[0],200,200);      
     });
 
 }
+
 
 module.exports = {
 	searchService,
@@ -132,5 +142,6 @@ module.exports = {
     createService,
     editService,
     deleteService,
-    getMyServices
+    getMyServices,
+    obtainService
 }
