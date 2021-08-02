@@ -128,7 +128,7 @@ function getMyServices(us_id,res){
 function getCategories(us_id,res){
 
     connection.connect();
-    connection.query("CALL GetCategories(?);",[us_id],(err, result) =>{
+    connection.query("CALL getCategories(?);",[us_id],(err, result) =>{
         utilComun.errResult(res, err,result[0],200,200);      
     });
 
