@@ -112,6 +112,13 @@ function getMyServices(us_id,res){
 
     connection.connect();
     connection.query("CALL getMyServices(?);;",[us_id], (err,result) => {
+        let numReg = result[0].length;
+
+        for(i=0 ; i<numReg; i++){
+            if(result[0][i].ser_calificacion == null){
+                result[0][i].ser_calificacion = 0;
+            }
+        }
         utilComun.errResult(res, err,result[0],200,200);       
     });
 
