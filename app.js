@@ -5,6 +5,8 @@ const cors = require("cors");
 const route = require("./routes");
 const morgan = require("morgan");
 const app = express();
+const cloudinary = require("cloudinary")
+const GlobalEnv = require("./GlobalEnv");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "50mb" }));
@@ -16,5 +18,9 @@ app.use("/static", express.static(__dirname + "/public"));
 app.use(function(req, res, next) {
     res.status(404).send("Pagina 404");
 });
-
+cloudinary.config({ 
+    cloud_name: GlobalEnv.cloud_name, 
+    api_key: GlobalEnv.api_key, 
+    api_secret: GlobalEnv.api_secret 
+  });
 module.exports = app;

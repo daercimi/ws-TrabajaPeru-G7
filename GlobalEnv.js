@@ -1,6 +1,5 @@
 module.exports = {
     app_name: "Trabaja Peru",
-    uri_database: "",
     host: process.env.HOST || "http://localhost",
     hostdb: process.env.HOSTDB || "sql10.freemysqlhosting.net",
     //hostdb: "localhost",
@@ -13,4 +12,9 @@ module.exports = {
     //passwordDb: "unmsm",
     database: process.env.DATABASE || "sql10420317",
     TOKEN_SECRET: process.env.TOKEN_SECRET || "trabajaperu-access",
+    //cloudinary vars
+    cloud_name: process.env.CLOUD_NAME || "trabaja-peru",
+    api_key: process.env.API_KEY || "655682455259227",
+    api_secret: process.env.API_SECRET || "jGB0CZQ5KMa3F-pBwR6WOfZWOEA"
+
 }; 

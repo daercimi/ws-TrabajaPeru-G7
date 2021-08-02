@@ -397,6 +397,19 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
     })
 
+    it("Prueba del comando GET_CATEGORIES" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .send({
+          command:"GET_CATEGORIES"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
     it("Prueba del comando por default" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
@@ -435,18 +448,6 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .post("/service",service)
       .send({
           command:"GET_HOME_SERVICES"
-      })
-      .end(function (err, response){
-        expect(response).to.have.status(200);
-        done();
-      })
-    })
-
-    it("Prueba del comando GET_CATEGORIES" , function(done){
-      chai.request(server)
-      .post("/service",service)
-      .send({
-          command:"GET_CATEGORIES"
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
