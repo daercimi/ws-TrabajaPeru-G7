@@ -14,7 +14,7 @@ module.exports = {
     TOKEN_SECRET: process.env.TOKEN_SECRET || "trabajaperu-access",
     //cloudinary vars
     cloud_name: process.env.CLOUD_NAME || "trabaja-peru",
-    api_key: process.env.api_key || "655682455259227",
-    api_secret: process.env.api_secret || "jGB0CZQ5KMa3F-pBwR6WOfZWOEA"
+    api_key: process.env.API_KEY || "655682455259227",
+    api_secret: process.env.API_SECRET || "jGB0CZQ5KMa3F-pBwR6WOfZWOEA"
 
 }; 
