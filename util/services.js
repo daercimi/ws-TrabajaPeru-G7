@@ -112,7 +112,7 @@ function getMyServices(us_id,res){
 
     connection.connect();
     connection.query("CALL getMyServices(?);;",[us_id], (err,result) => {
-        utilComun.errResult(res, err,result,200,200);       
+        utilComun.errResult(res, err,result[0],200,200);       
     });
 
 }
