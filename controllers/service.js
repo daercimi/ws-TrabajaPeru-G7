@@ -14,10 +14,6 @@ var serviceOperation = function(req,res) {
         case "GET_HOME_SERVICES":
             utilServices.getHomeServices(res);
             break;
-        
-        case "GET_CATEGORIES":
-            utilServices.getCategories(res);
-            break;
 
         default:
             return res.status(500).send({
