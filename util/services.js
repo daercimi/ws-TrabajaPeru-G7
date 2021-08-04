@@ -39,13 +39,13 @@ function createService(req,us_id,res){
     const service = req.body.transaction;
     const newServicio = new Servicio(us_id, service);
     connection.connect();
-    connection.query("CALL serviceExistance(?,?);",[newServicio.us_id,newServicio.cat_id], (err,result) =>{
+    connection.query("CALL serviceExistance(?,?);",[newServicio.us_id,newServicio.cat_nombre], (err,result) =>{
         if (err) {
             return utilComun.resFailed(res, err,200) 
         }
         else {
             var existencia = result[0][0].existe;
-            connection.query("CALL createOrRecoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_id, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
+            connection.query("CALL createOrRecoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_nombre, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
                 if (err2) {
                     return utilComun.resFailed(res, err2,200)  
                 }
@@ -54,17 +54,17 @@ function createService(req,us_id,res){
                         case 0:
                             return res.status(200).send({
                                 status: "SUCCESS",
-                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_id + " creado correctamente."
+                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " creado correctamente."
                             });
                         case 1:
                             return res.status(200).send({
                                 status: "SUCCESS",
-                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_id + " ya existe, no se permiten duplicados."
+                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " ya existe, no se permiten duplicados."
                             });
                         case 2:
                             return res.status(200).send({
                                 status: "SUCCESS",
-                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_id + " reestablecido correctamente."
+                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " reestablecido correctamente."
                             });
                         default:
                             return res.status(200).send({
