@@ -15,10 +15,10 @@ function resFailed(res, err, cod ){
 
 //Función para mandar resultado
 function sendResult(res,result,cod){
-   return res.status(cod).send(result); 
+   return res.status(cod).send(result[0]); 
 }
 
-//Función para tratael error o resultado
+//Función para trat ael error o resultado
 function errResult(res, err, result,cod_err,cod_success){
     
     if (err) {

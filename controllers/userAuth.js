@@ -5,8 +5,8 @@ var userOperation = function(req, res) {
         case "EDIT_USER":
             serviceUser.editUser(req, res);
             break;
-        case "OBTAIN_USER": 
-            serviceUser.obtainUser(req, res);
+        case "GET_MY_USER": 
+            serviceUser.getMyUser(req, res);
             break;
         default:
             return res.status(500).send({

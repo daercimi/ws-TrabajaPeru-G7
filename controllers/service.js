@@ -15,6 +15,10 @@ var serviceOperation = function(req,res) {
             utilServices.getHomeServices(res);
             break;
 
+        case "OBTAIN_SERVICE":
+            utilServices.obtainService(req,res);
+            break;
+
         default:
             return res.status(500).send({
                 status: "ERROR",

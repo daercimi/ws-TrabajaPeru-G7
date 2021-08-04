@@ -8,7 +8,7 @@ function searchService(req, res) {
 
     connection.connect()
     connection.query("CALL searchService(?)",busq, (err, result) => {
-        utilComun.errResult(res, err,result[0],200,200);
+        utilComun.errResult(res, err,result,200,200);
     });
 }
 
@@ -16,15 +16,15 @@ function getHomeServices(res){
 
     connection.connect();
     connection.query("CALL GetHomeServices();",(err, result) =>{
-        utilComun.errResult(res, err,result[0],200,200);      
+        utilComun.errResult(res, err,result,200,200);      
     });
 }
 
-function obtainService(us_id,res){
-
+function obtainService(req,res){
+    const data = req.body.transaction;
     connection.connect();
-    connection.query("CALL obtainService(?);",[us_id],(err, result) =>{
-        utilComun.errResult(res, err,result,200,200);      
+    connection.query("CALL obtainService(?,?);",[data.us_id,data.cat_id],(err, result) =>{
+        utilComun.errResult(res,err,result,200,200);      
     });
 
 }
@@ -121,7 +121,7 @@ function getMyServices(us_id,res){
                 result[0][i].ser_calificacion = 0;
             }
         }
-        utilComun.errResult(res, err,result[0],200,200);       
+        utilComun.errResult(res, err,result,200,200);       
     });
 }
 
@@ -129,7 +129,7 @@ function getCategories(us_id,res){
 
     connection.connect();
     connection.query("CALL getCategories(?);",[us_id],(err, result) =>{
-        utilComun.errResult(res, err,result[0],200,200);      
+        utilComun.errResult(res, err,result,200,200);      
     });
 
 }
