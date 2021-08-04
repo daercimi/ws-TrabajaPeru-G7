@@ -118,7 +118,7 @@ function getMyUser(req,res) {
     connection.query(
         "CALL getMyUser(?);", [user],
         (err,result) => {
-            utilComun.errResult(res,err,result,200,200);
+            utilComun.errResult(res,err,result[0],200,200);
         }
     )
 }

@@ -6,6 +6,7 @@ const user = require("../controllers/user.js");
 const userAuth = require("../controllers/userAuth.js");
 const dbConnection = require("../connect");
 const connection = dbConnection();
+const services = require("../services/index")
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
@@ -21,9 +22,9 @@ let test_us_provincia = "Lima";
 let test_us_distrito = "Lima";
 let test_us_contrasena = "testing";
 
-let test_cat_nombre = "Mudanzas"
+let test_cat_nombre = "Mudanzas";
 
-let test_tkn = 'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxNjAiLCJuYW1lIjoidGVzdCBub21icmUiLCJpYXQiOjE1MTYyMzkwMjJ9.QxOATtGbXU856XcJkglPcaTJyJ2r09uKyW2nF5eHH_g';
+var test_tkn = "";
 
 describe("PRUEBAS DEL BACK", () => {
 
@@ -116,7 +117,15 @@ describe("PRUEBAS DEL BACK", () => {
         done();
       })
     })
-    
+
+    connection.connect()
+    connection.query("SELECT us_id FROM Usuario WHERE us_correo = ?;",[test_us_correo],(err,result)=>{
+      if(err == null){
+        const usr = result[0];
+        test_tkn = 'bearer ' + services.createToken(usr);
+      }
+    });
+
     it("Prueba del comando LOGIN_USER" , function(done){
       chai.request(server)
       .post("/user",user)
@@ -538,12 +547,5 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 })
 
 connection.connect()
-connection.query("CALL testRestore(?,?)",[test_us_correo, test_cat_nombre], (err, result) => {
-    if(err){
-      console.log(err);
-    }
-    else{
-      console.log(result);
-    }
-});
+connection.query("CALL testRestore(?,?)",[test_us_correo, test_cat_nombre]);
 
