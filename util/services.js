@@ -66,11 +66,6 @@ function createService(req,us_id,res){
                                 status: "SUCCESS",
                                 message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " reestablecido correctamente."
                             });
-                        default:
-                            return res.status(200).send({
-                                status: "FAILED",
-                                message: "Error en SQL"
-                            });
                     }
                 }
             })
@@ -83,7 +78,7 @@ function editService(req,us_id,res){
     connection.connect();
     connection.query("CALL editService(?,?,?,?);", [us_id,service.cat_id,service.ser_descripcion, service.ser_imagen], (err, result) =>{
         if (err) {
-            return utilComun.resFailed(res, err,200)
+            return utilComun.resFailed(res,err,200)
         } else {
             return res.status(200).send({
                 status: "SUCCESS",
