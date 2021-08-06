@@ -10,7 +10,6 @@ const services = require("../services/index")
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
-const { setTimeout } = require("../index");
 
 var expect = chai.expect;
 chai.use(chaiHttp);
@@ -35,10 +34,11 @@ const test2 = {
   us_provincia: "Lima",
   us_distrito: "Lima",
   us_contrasena: "testing",
-  us_imagen:""
-}
+  us_imagen:"",
 
-let test_cat_nombre = "Mudanzas";
+  cat_id:1,
+  cat_nombre:"Albañilería"
+}
 
 var test_tkn1 = "";
 var test_tkn2 = "";
@@ -95,10 +95,7 @@ describe("PRUEBAS DEL BACK", () => {
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
       .set('authorization','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-      .send({
-          command:"",
-          transaction: {}
-      })
+      .send({})
       .end(function (err, response){
         expect(response).to.have.status(401);
         done();
@@ -109,24 +106,18 @@ describe("PRUEBAS DEL BACK", () => {
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
       .set('authorization','bearer eyJhbGciOiJkUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-      .send({
-          command:"",
-          transaction: {}
-      })
+      .send({})
       .end(function (err, response){
         expect(response).to.have.status(403);
         done();
       })
     })
 
-    it("Prueba de fallo en token invalido" , function(done){
+    it("Prueba de fallo en token expirado" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJkUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-      .send({
-          command:"",
-          transaction: {}
-      })
+      .set('authorization','bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEwMCwiaWF0IjoxNjI4MjE3NTg0LCJleHAiOjE2MTYyMzkwMjJ9.Zl-Z14j6bWf3bRkN8DQV8inNv7Y7T2qcoVgVGw02sl8')
+      .send({})
       .end(function (err, response){
         expect(response).to.have.status(403);
         done();
@@ -164,6 +155,10 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':"Usuario logeado correctamente"
+        });
         done();
       })
     })
@@ -180,6 +175,10 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"FAILED",
+          'body.message':"No se encontro el usuario"
+        });
         done();
       })
     })
@@ -195,11 +194,11 @@ describe("PRUEBAS DEL BACK", () => {
         }  
       })
       .end(function (err, response){
-        if(err){
-          expect(err).to.have.status(200);
-          done();
-        }
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"FAILED",
+          'body.message':"La contraseña es incorrecta"
+        });
         done();
       })
     })
@@ -213,6 +212,10 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':"Búsqueda existosa"
+        });
         done();
       })
     })
@@ -226,6 +229,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.message':"No se encontraron resultados"
+        });
         done();
       })
     })
@@ -242,6 +248,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"FAILED"
+        });
         done();
       })
     })
@@ -254,6 +263,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
@@ -267,6 +279,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
@@ -345,7 +360,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .send({
           command:"CREATE_SERVICE",
           transaction: {
-            cat_nombre: "Albañilería",
+            cat_nombre: test2.cat_nombre,
             ser_descripcion: "test",
             ser_imagen: "link"
           }
@@ -521,7 +536,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
         expect(response).to.have.status(500);
 
         connection.connect()
-        connection.query("CALL testRestore('testcorreo@testing.com',100,1);",(err,result)=>{
+        connection.query("CALL testRestore(?,?,?);",[test1.us_correo,test2.us_id,test2.cat_id],(err,result)=>{
           console.log(" BD Restaurada: \n",result);
           return;
         });
