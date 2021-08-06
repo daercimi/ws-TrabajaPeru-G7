@@ -315,6 +315,22 @@ describe("PRUEBAS DEL BACK", () => {
       })
     })
     
+    it("Prueba del comando OBTAIN_USER" , function(done){
+      chai.request(server)
+      .post("/user-auth",auth,userAuth)
+      .set('authorization',test_tkn2)
+      .send({
+          command:"OBTAIN_USER",
+          transaction:{
+            us_id: "1",  
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
     it("Prueba del comando por default" , function(done){
       chai.request(server)
       .post("/user-auth",auth,userAuth)
@@ -512,7 +528,8 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 
     it("Prueba del comando OBTAIN_SERVICE", function(done){
       chai.request(server)
-      .post("/service",service)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization',test_tkn2)
       .send({
           command:"OBTAIN_SERVICE",
           transaction:{

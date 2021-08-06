@@ -124,7 +124,7 @@ function getMyUser(req,res) {
 }
 
 function obtainUser(req,res) {
-    const user = req.transaction;
+    const user = req.body.transaction;
     connection.connect()
     connection.query(
         "CALL obtainUser(?);", [user.us_id],

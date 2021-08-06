@@ -11,9 +11,9 @@ var userOperation = function(req, res) {
             break;
 
         case "OBTAIN_USER": //Para obtener el perfil de cualquier usuario
-        utilUser.obtainUser(req,res);
+            serviceUser.obtainUser(req,res);
         break;
-        
+
         default:
             return res.status(500).send({
                 status: "ERROR",
