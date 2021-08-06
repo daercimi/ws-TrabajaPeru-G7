@@ -20,7 +20,6 @@ api.get("/", function(req, res) {
 
 api.post("/user", user);
 api.post("/user-auth",auth,userAuth);
-
 api.post("/service-auth",auth,serviceAuth);
 api.post("/service",service);
 

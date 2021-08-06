@@ -17,9 +17,6 @@ const userOperation = function(req, res) {
         case "GET_HOME_USERS": //PARA EL HOME, los 10 más recientes usuarios
             utilUser.getHomeUsers(res);
             break;
-        case "OBTAIN_USER": //Para obtener el perfil de cualquier usuario
-            utilUser.obtainUser(req,res);
-            break;
         default:
             return res.status(500).send({
                 status: "ERROR",
