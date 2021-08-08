@@ -1,17 +1,21 @@
-const serviceUser = require("../util/user")
+const utilUser = require("../util/user")
 var userOperation = function(req, res) {
     const command = req.body.command;
     switch (command) {
         case "EDIT_USER":
-            serviceUser.editUser(req, res);
+            utilUser.editUser(req, res);
             break;
 
         case "GET_MY_USER": 
-            serviceUser.getMyUser(req, res);
+            utilUser.getMyUser(req, res);
             break;
 
+        case "GET_HOME_USERS": //PARA EL HOME, los 10 más recientes usuarios
+            utilUser.getHomeUsers(req,res);
+        break;
+
         case "OBTAIN_USER": //Para obtener el perfil de cualquier usuario
-            serviceUser.obtainUser(req,res);
+            utilUser.obtainUser(req,res);
         break;
 
         default:

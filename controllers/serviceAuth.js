@@ -29,6 +29,10 @@ var serviceOperation = function(req,res) {
         case "OBTAIN_SERVICE":
             utilServices.obtainService(req,res);
             break;
+
+        case "GET_HOME_SERVICES":
+            utilServices.getHomeServices(us_id,res);
+            break;
             
         default:
             return res.status(500).send({

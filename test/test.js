@@ -257,7 +257,8 @@ describe("PRUEBAS DEL BACK", () => {
 
     it("Prueba del comando GET_HOME_USERS" , function(done){
       chai.request(server)
-      .post("/user",user)
+      .post("/user-auth",auth,userAuth)
+      .set('authorization',test_tkn2)
       .send({
           command:"GET_HOME_USERS"
       })
@@ -516,7 +517,8 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 
     it("Prueba del comando GET_HOME_SERVICES" , function(done){
       chai.request(server)
-      .post("/service",service)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization',test_tkn2)
       .send({
           command:"GET_HOME_SERVICES"
       })

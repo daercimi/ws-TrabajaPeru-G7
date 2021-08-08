@@ -12,14 +12,6 @@ function searchService(req, res) {
     });
 }
 
-function getHomeServices(res){
-
-    connection.connect();
-    connection.query("CALL GetHomeServices();",(err, result) =>{
-        utilComun.errResult(res, err,result,200,200);      
-    });
-}
-
 function obtainService(req,res){
     const data = req.body.transaction;
     connection.connect();
@@ -102,6 +94,14 @@ function deleteService(req,us_id,res){
                 message: "Servicio eliminado correctamente",
             });
         }        
+    });
+}
+
+function getHomeServices(us_id,res){
+
+    connection.connect();
+    connection.query("CALL GetHomeServices(?);",[us_id],(err, result) =>{
+        utilComun.errResult(res, err,result,200,200);      
     });
 }
 
