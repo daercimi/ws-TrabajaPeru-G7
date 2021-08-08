@@ -101,11 +101,11 @@ function searchUser(req, res) {
     );
 }
 
-function getHomeUsers(req,res) {
-    const user = req.user.response.payload;
+function getHomeUsers(res) {
+
     connection.connect()
     connection.query(
-        "CALL getHomeUsers(?);", [user],
+        "CALL getHomeUsers();",
         (err, result) => {
             utilComun.errResult(res, err,result,200,200);
         }

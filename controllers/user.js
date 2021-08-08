@@ -14,6 +14,9 @@ const userOperation = function(req, res) {
         case "RATE_USER": //Calificar usuario
             utilUser.rateUser(req, res);
             break;
+        case "GET_HOME_USERS": //PARA EL HOME, los 10 más recientes usuarios
+            utilUser.getHomeUsers(res);
+            break;
         default:
             return res.status(500).send({
                 status: "ERROR",

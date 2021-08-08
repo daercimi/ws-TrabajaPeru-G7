@@ -17,6 +17,12 @@ function decodeToken(token){
 	return new Promise((resolve, reject) =>{
 		try{
 			const payload = jwt.decode(token, config.TOKEN_SECRET);
+			if(payload.exp <= moment().unix()) {
+				params.message = ''
+				params.status = 401
+				params.code = "0002"
+				reject(params);
+			}
 			params.message = ''
 			params.status = 200
 			params.code = '0004'
