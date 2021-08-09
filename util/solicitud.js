@@ -1,4 +1,4 @@
-const Solicitud = require("../models/Servicios");
+const Solicitud = require("../models/Solicitud");
 const utilComun = require("./comun");
 const dbConnection = require("../connect");
 const connection = dbConnection();
