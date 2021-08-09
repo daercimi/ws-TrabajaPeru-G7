@@ -19,6 +19,14 @@ var solicitudOperation = function(req,res) {
             utilSolicitud.obtainSolicitud(req,res);
             break;
 
+        case "CHANGE_SOLICITUD_STATE":
+            utilSolicitud.changeSolicitudState(req,res);
+            break;
+
+        case "GET_NOTIFICATIONS":
+            utilSolicitud.getNotifications(us_id,res);
+            break;
+
         default:
             return res.status(500).send({
                 status: "ERROR",

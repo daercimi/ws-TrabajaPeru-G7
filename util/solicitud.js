@@ -22,18 +22,34 @@ function getSolicitudes(us_id, res) {
 
 function obtainSolicitud(req, res) {
     const data = req.body.transaction;
-
+    
     connection.connect()
     connection.query("CALL obtainSolicitud(?)",[data.sol_id], (err, result) => {
         utilComun.errResult(res,err,result,200,200);
     });
 }
 
+function changeSolicitudState(req, res) {
+    const data = req.body.transaction;
+    
+    connection.connect()
+    connection.query("CALL changeSolicitudState(?,?)",[data.sol_id,data.sol_estado], (err, result) => {
+        utilComun.errResult(res,err,result,200,200);
+    });
+}
 
-
+function getNotifications(us_id, res) {
+    
+    connection.connect()
+    connection.query("CALL getNotifications(?)",[us_id], (err, result) => {
+        utilComun.errResult(res,err,result,200,200);
+    });
+}
 
 module.exports = {
 	createSolicitud,
     getSolicitudes,
-    obtainSolicitud
+    obtainSolicitud,
+    changeSolicitudState,
+    getNotifications
 }
