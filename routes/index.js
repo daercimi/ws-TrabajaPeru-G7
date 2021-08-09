@@ -25,7 +25,7 @@ api.post("/user", user);
 api.post("/user-auth",auth,userAuth);
 api.post("/service-auth",auth,serviceAuth);
 api.post("/service",service);
-api.post("/solicitud-auth",auth,service);
+api.post("/solicitud-auth",auth,solicitudAuth);
 ///////////////////////////////////////////////////////////////
 //BUSCAR USUARIO
 api.post("/search/user", user);

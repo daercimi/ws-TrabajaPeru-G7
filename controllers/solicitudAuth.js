@@ -7,7 +7,15 @@ var solicitudOperation = function(req,res) {
 
         case "CREATE_SOLICITUD":
             utilSolicitud.searchService(req,res);
-           break;
+            break;
+
+        case "GET_SOLICITUDES":
+            utilSolicitud.searchService(req,res);
+            break;
+
+        case "OBTAIN_SOLICITUD":
+            utilSolicitud.searchService(req,res);
+            break;
 
         default:
             return res.status(500).send({
