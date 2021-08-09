@@ -1,5 +1,4 @@
 class Servicio {
-    // REVISAR
     constructor(user, service) { 
             this.us_id = user;
             this.cat_id = service.cat_id;

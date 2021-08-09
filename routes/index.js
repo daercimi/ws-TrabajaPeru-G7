@@ -1,8 +1,11 @@
 const express = require("express");
+
 const user = require("../controllers/user");
 const userAuth = require("../controllers/userAuth");
 const serviceAuth = require("../controllers/serviceAuth");
 const service = require("../controllers/service");
+const solicitudAuth = require("../controllers/solicitudAuth");
+
 const api = express.Router();
 const dbConnection = require("../connect");
 const connection = dbConnection();
@@ -22,7 +25,7 @@ api.post("/user", user);
 api.post("/user-auth",auth,userAuth);
 api.post("/service-auth",auth,serviceAuth);
 api.post("/service",service);
-
+api.post("/solicitud-auth",auth,service);
 ///////////////////////////////////////////////////////////////
 //BUSCAR USUARIO
 api.post("/search/user", user);
