@@ -13,6 +13,13 @@ function resFailed(res, err, cod ){
     })
 }
 
+function uploadImage(path, res ){
+    cloudinary.uploader.upload(path ,
+    function(error, result) {
+        console.log(result)
+    });
+}
+
 //Función para mandar resultado
 function sendResult(res,result,cod){
    return res.status(cod).send(result); 
