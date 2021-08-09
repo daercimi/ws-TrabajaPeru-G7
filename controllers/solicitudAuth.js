@@ -2,19 +2,21 @@ const utilSolicitud = require("../util/solicitud");
 
 var solicitudOperation = function(req,res) {
 
+    var us_id = req.user.response.payload;
+
     const command = req.body.command;
     switch(command){
 
         case "CREATE_SOLICITUD":
-            utilSolicitud.searchService(req,res);
+            utilSolicitud.createSolicitud(us_id,req,res);
             break;
 
         case "GET_SOLICITUDES":
-            utilSolicitud.searchService(req,res);
+            utilSolicitud.getSolicitudes(us_id,res);
             break;
 
         case "OBTAIN_SOLICITUD":
-            utilSolicitud.searchService(req,res);
+            utilSolicitud.obtainSolicitud(req,res);
             break;
 
         default:
