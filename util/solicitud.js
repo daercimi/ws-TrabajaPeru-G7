@@ -15,7 +15,7 @@ function createSolicitud(us_id,req, res) {
 
 function getSolicitudes(us_id, res) {
     connection.connect()
-    connection.query("CALL getSolicitud(?)",[us_id], (err, result) => {
+    connection.query("CALL getSolicitudes(?)",[us_id], (err, result) => {
         utilComun.errResult(res,err,result,200,200);
     });
 }
