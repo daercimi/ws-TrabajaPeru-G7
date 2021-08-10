@@ -87,13 +87,13 @@ function searchUser(req, res) {
                     return res.status(200).send({
                         status: "SUCCESS",
                         message: "No se encontraron resultados",
-                        resultado: result,
+                        resultado: result[0],
                     });
                 }
                 return res.status(200).send({
                     status: "SUCCESS",
                     message: "Búsqueda existosa",
-                    resultado: result,
+                    resultado: result[0],
                 });
                 
             }
@@ -101,24 +101,35 @@ function searchUser(req, res) {
     );
 }
 
-function getUsers(res) {
+function getHomeUsers(res) {
 
     connection.connect()
     connection.query(
         "CALL getHomeUsers();",
         (err, result) => {
-            utilComun.errResult(res, err,result[0],200,200);
+            utilComun.errResult(res, err,result,200,200);
         }
     );
 }
 
-function obtainUser(req,res) {
+function getMyUser(req,res) {
     const user = req.user.response.payload;
     connection.connect()
     connection.query(
-        "CALL obtainUser(?);", [user],
+        "CALL getMyUser(?);", [user],
         (err,result) => {
-            utilComun.errResult(res,err,result[0][0],200,200);
+            utilComun.errResult(res,err,result[0],200,200);
+        }
+    )
+}
+
+function obtainUser(req,res) {
+    const user = req.body.transaction;
+    connection.connect()
+    connection.query(
+        "CALL obtainUser(?);", [user.us_id],
+        (err,result) => {
+            utilComun.errResult(res,err,result,200,200);
         }
     )
 }
@@ -148,7 +159,8 @@ module.exports = {
 	loginUser,
 	registerUser,
 	searchUser,
-	getUsers,
+	getHomeUsers,
+    obtainUser,
     editUser,
-    obtainUser
+    getMyUser
 }

@@ -1,7 +1,7 @@
 {
-    "name": "soe",
+    "name": "trabajaperu",
     "version": "1.0.0",
-    "description": "software SOE",
+    "description": "software TrabajaPeru",
     "main": "index.js",
     "scripts": {
         "test": "mocha test/test.js --exit",
@@ -9,7 +9,7 @@
         "dev": "nodemon index.js",
         "start": "node index.js"
     },
-    "author": "Amezaga-code",
+    "author": "TrabajaPeru",
     "license": "ISC",
     "dependencies": {
         "@testing-library/user-event": "^13.1.9",

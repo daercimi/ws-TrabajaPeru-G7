@@ -22,6 +22,14 @@ var serviceOperation = function(req,res) {
             utilServices.getMyServices(us_id,res);
             break;
 
+        case "GET_CATEGORIES":
+            utilServices.getCategories(us_id, res);
+            break;
+        
+        case "OBTAIN_SERVICE":
+            utilServices.obtainService(req,res);
+            break;
+            
         default:
             return res.status(500).send({
                 status: "ERROR",

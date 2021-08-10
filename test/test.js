@@ -4,12 +4,55 @@ const serviceAuth = require("../controllers/serviceAuth.js");
 const service = require("../controllers/service.js"); 
 const user = require("../controllers/user.js");
 const userAuth = require("../controllers/userAuth.js");
+const dbConnection = require("../connect");
+const connection = dbConnection();
+const services = require("../services/index")
 
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 
 var expect = chai.expect;
 chai.use(chaiHttp);
+
+const test1 = {
+  us_nombres:"Test name",
+  us_correo: 'testcorreo@testing.com',
+  us_celular: "735712673",
+  us_departamento: "Lima",
+  us_provincia: "Lima",
+  us_distrito: "Lima",
+  us_contrasena: "testing",
+  us_imagen:""
+}
+
+const test2 = {
+  us_id:100,
+  us_nombres:"Test2 services",
+  us_correo: 'test2@correo.com',
+  us_celular: "987654321",
+  us_departamento: "Lima",
+  us_provincia: "Lima",
+  us_distrito: "Lima",
+  us_contrasena: "testing",
+  us_imagen:"",
+
+  cat_id:1,
+  cat_nombre:"Albañilería"
+}
+
+var test_tkn1 = "";
+var test_tkn2 = "";
+
+//////////////////////////////////////
+
+connection.connect()
+connection.query("SELECT us_id FROM Usuario WHERE us_id = 100;",(err,result)=>{
+  if(err == null){
+    const usr = result[0];
+    test_tkn2 = 'bearer ' + services.createToken(usr);
+  }
+});
+/////////////////////////////////
 
 describe("PRUEBAS DEL BACK", () => {
 
@@ -18,10 +61,8 @@ describe("PRUEBAS DEL BACK", () => {
     it("Prueba de 404 Not Found" , function(done){
       chai.request(server)
       .post("/cualquierruta")
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-      .send({
-          command:"CUALQUIER_COMANDO"
-      })
+      .set('authorization','bearer eyJhbGciOI6IkpXVCJ9.eyJzdWIiOkwIiwibmWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2yN_lfWSFCms4z4')
+      .send({})
       .end(function (err, response){
         expect(response).to.have.status(404);
         done();
@@ -41,12 +82,8 @@ describe("PRUEBAS DEL BACK", () => {
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
       .send({
-          command:"CREATE_SERVICE",
-          transaction: {
-            cat_id: 10,
-            ser_descripcion: "test",
-            ser_imagen: "link"
-          }
+          command:"",
+          transaction: {}
       })
       .end(function (err, response){
         expect(response).to.have.status(401);
@@ -58,32 +95,29 @@ describe("PRUEBAS DEL BACK", () => {
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
       .set('authorization','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-      .send({
-          command:"CREATE_SERVICE",
-          transaction: {
-            cat_id: 10,
-            ser_descripcion: "test",
-            ser_imagen: "link"
-          }
-      })
+      .send({})
       .end(function (err, response){
         expect(response).to.have.status(401);
         done();
       })
     })
 
-    it("Prueba de fallo en token invalido o expirado" , function(done){
+    it("Prueba de fallo en token invalido" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
       .set('authorization','bearer eyJhbGciOiJkUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-      .send({
-          command:"CREATE_SERVICE",
-          transaction: {
-            cat_id: 10,
-            ser_descripcion: "test",
-            ser_imagen: "link"
-          }
+      .send({})
+      .end(function (err, response){
+        expect(response).to.have.status(403);
+        done();
       })
+    })
+
+    it("Prueba de fallo en token expirado" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization','bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEwMCwiaWF0IjoxNjI4MjE3NTg0LCJleHAiOjE2MTYyMzkwMjJ9.Zl-Z14j6bWf3bRkN8DQV8inNv7Y7T2qcoVgVGw02sl8')
+      .send({})
       .end(function (err, response){
         expect(response).to.have.status(403);
         done();
@@ -100,36 +134,31 @@ describe("PRUEBAS DEL BACK", () => {
       .post("/user",user)
       .send({
         command : "REGISTER_USER",
-        transaction : {
-            us_nombres : "Juan Diego",
-            us_celular : "968200448",
-            us_correo : "juan.perez@.gmail.com",
-            us_departamento : "Lima",
-            us_provincia : "Lima",
-            us_distrito : "",
-            us_contrasena : "unmsm",
-            us_imagen : ""
-        }
+        transaction : test1
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':"Usuario registrado correctamente"
+        });
         done();
       })
     })
 
-    
     it("Prueba del comando LOGIN_USER" , function(done){
       chai.request(server)
       .post("/user",user)
       .send({
         command : "LOGIN_USER",
-        transaction : {
-            us_correo : "juan.perez@.gmail.com",
-            us_contrasena : "unmsm"
-        }  
+        transaction : test2
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':"Usuario logeado correctamente"
+        });
         done();
       })
     })
@@ -146,6 +175,10 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"FAILED",
+          'body.message':"No se encontro el usuario"
+        });
         done();
       })
     })
@@ -156,31 +189,33 @@ describe("PRUEBAS DEL BACK", () => {
       .send({
         command : "LOGIN_USER",
         transaction : {
-            us_correo : "juan.perez@.gmail.com",
+            us_correo : test2.us_correo,
             us_contrasena : "gaaaaa"
         }  
       })
       .end(function (err, response){
-        if(err){
-          expect(err).to.have.status(200);
-          done();
-        }
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"FAILED",
+          'body.message':"La contraseña es incorrecta"
+        });
         done();
       })
     })
-
 
     it("Prueba del comando SEARCH_USER" , function(done){
       chai.request(server)
       .post("/search/user",user)
       .send({
         command : "SEARCH_USER",
-        transaction : "Arian"
-        
+        transaction : test2.us_nombres
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':"Búsqueda existosa"
+        });
         done();
       })
     })
@@ -191,10 +226,12 @@ describe("PRUEBAS DEL BACK", () => {
       .send({
         command : "SEARCH_USER",
         transaction : "njr;ktsntjkernfcjse;"
-        
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.message':"No se encontraron resultados"
+        });
         done();
       })
     })
@@ -205,49 +242,66 @@ describe("PRUEBAS DEL BACK", () => {
       .send({
         command : "SEARCH_USER",
         transaction : {
-          nombre: "Arian"
+          nombre: test2.us_nombres
         }
         
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"FAILED"
+        });
         done();
       })
     })
 
-    it("Prueba del comando GET_USERS" , function(done){
+    it("Prueba del comando GET_HOME_USERS" , function(done){
       chai.request(server)
       .post("/user",user)
       .send({
-          command:"GET_USERS"
+          command:"GET_HOME_USERS"
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
 
-    it("Prueba del comando OBTAIN_USER" , function(done){
+    it("Prueba del comando GET_MY_USER" , function(done){
       chai.request(server)
       .post("/user-auth",auth,userAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization',test_tkn2)
       .send({
-          command:"OBTAIN_USER"
+          command:"GET_MY_USER"
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
-    
+
+    connection.connect()
+    connection.query("SELECT us_id FROM Usuario WHERE us_correo = ?;",[test1.us_correo],(err,result)=>{
+      if(err == null){
+        const usr = result[0];
+        test_tkn1 = 'bearer ' + services.createToken(usr);
+      }
+    });  
+
     it("Prueba del comando EDIT_USER" , function(done){
       chai.request(server)
       .post("/user-auth",auth,userAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization',test_tkn1)
       .send({
           command:"EDIT_USER",
           transaction:{
-            us_nombres:"nombre editado",
+            us_nombres:"test editado",
             us_celular:987654321,
             us_departamento:"Lima",
             us_provincia:"Lima",
@@ -261,11 +315,26 @@ describe("PRUEBAS DEL BACK", () => {
       })
     })
     
+    it("Prueba del comando OBTAIN_USER" , function(done){
+      chai.request(server)
+      .post("/user-auth",auth,userAuth)
+      .set('authorization',test_tkn2)
+      .send({
+          command:"OBTAIN_USER",
+          transaction:{
+            us_id: "1",  
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
 
     it("Prueba del comando por default" , function(done){
       chai.request(server)
       .post("/user-auth",auth,userAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization',test_tkn2)
       .send({
           command:"CUALQUIER_COMANDO"
       })
@@ -285,7 +354,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
     it("Prueba del CREATE_SERVICE failed SQL" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization',test_tkn2)
       .send({
           command:"CREATE_SERVICE",
           transaction: {
@@ -299,16 +368,64 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
     })
   
-    it("Prueba del comando CREATE_SERVICE" , function(done){
+
+    it("Prueba del comando CREATE_SERVICE no existente" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .set('authorization',test_tkn2)
       .send({
           command:"CREATE_SERVICE",
           transaction: {
-            cat_id: 10,
+            cat_nombre: test2.cat_nombre,
             ser_descripcion: "test",
             ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando GET_MY_SERVICES" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization',test_tkn2)
+      .send({
+          command:"GET_MY_SERVICES",
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando CREATE_SERVICE existente" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization',test_tkn2)
+      .send({
+          command:"CREATE_SERVICE",
+          transaction: {
+            cat_nombre: "Carpintería",
+            ser_descripcion: "test",
+            ser_imagen: "link"
+          }
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        done();
+      })
+    })
+
+    it("Prueba del comando DELETE_SERVICE" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization',test_tkn2)
+      .send({
+          command:"DELETE_SERVICE",
+          transaction: {
+            cat_id:3
           }
       })
       .end(function (err, response){
@@ -320,11 +437,11 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
     it("Prueba del comando CREATE_SERVICE eliminado" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .set('authorization',test_tkn2)
       .send({
           command:"CREATE_SERVICE",
           transaction: {
-            cat_id: 4,
+            cat_nombre: "Cocina",
             ser_descripcion: "test",
             ser_imagen: "link"
           }
@@ -335,33 +452,16 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
     })
 
-    it("Prueba del comando CREATE_SERVICE no existente" , function(done){
-      chai.request(server)
-      .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
-      .send({
-          command:"CREATE_SERVICE",
-          transaction: {
-            cat_id: 3,
-            ser_descripcion: "test",
-            ser_imagen: "link"
-          }
-      })
-      .end(function (err, response){
-        expect(response).to.have.status(200);
-        done();
-      })
-    })
-  
     it("Prueba del comando EDIT_SERVICE" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .set('authorization',test_tkn2)
       .send({
           command:"EDIT_SERVICE",
           transaction: {
-            ser_descripcion: "test2",
-            ser_imagen: "link2"
+            cat_id:1,
+            ser_descripcion: "test descripcion editada",
+            ser_imagen: "test link editado"
           }
       })
       .end(function (err, response){
@@ -369,27 +469,13 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
         done();
       })
     })
-  
-    it("Prueba del comando DELETE_SERVICE" , function(done){
+
+    it("Prueba del comando GET_CATEGORIES" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
+      .set('authorization',test_tkn2)
       .send({
-          command:"DELETE_SERVICE",
-          transaction: {}
-      })
-      .end(function (err, response){
-        expect(response).to.have.status(200);
-        done();
-      })
-    })
-  
-    it("Prueba del comando GET_MY_SERVICES" , function(done){
-      chai.request(server)
-      .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Lxz0UOj2iwKalBcvvkw8yN_lfWSFCXpqK1UEI4ms4z4')
-      .send({
-          command:"GET_MY_SERVICES"
+          command:"GET_CATEGORIES"
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
@@ -400,7 +486,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
     it("Prueba del comando por default" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
-      .set('authorization','bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.68uLq-MIsruDAdqS5GLD44oV82XjzYM2KvK_5kL1i8U')
+      .set('authorization',test_tkn2)
       .send({
           command:"CUALQUIER_COMANDO"
       })
@@ -411,8 +497,6 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
     })
 
   })
-
-   
 
   describe("Pruebas de service" , () => {
 
@@ -442,11 +526,16 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
     })
 
-    it("Prueba del comando GET_CATEGORIES" , function(done){
+    it("Prueba del comando OBTAIN_SERVICE", function(done){
       chai.request(server)
-      .post("/service",service)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization',test_tkn2)
       .send({
-          command:"GET_CATEGORIES"
+          command:"OBTAIN_SERVICE",
+          transaction:{
+            us_id:1,
+            cat_id:4
+          }
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
@@ -462,11 +551,20 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(500);
+
+        connection.connect()
+        connection.query("CALL testRestore(?,?,?);",[test1.us_correo,test2.us_id,test2.cat_id],(err,result)=>{
+          console.log(" BD Restaurada: \n",result);
+          return;
+        });
+
         done();
       })
     })
 
+
   })
 
   })
+
 })
