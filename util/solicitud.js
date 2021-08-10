@@ -46,10 +46,33 @@ function getNotifications(us_id, res) {
     });
 }
 
+function rateService(req, res) {
+    
+    const data = req.body.transaction;
+
+    connection.connect()
+    connection.query("CALL calificarServicio(?,?)",[data.id_solicitud, data.calif_tra], (err, result) => {
+        utilComun.errResult(res,err,result,200,200);
+    });
+}
+
+function rateClient(req, res) {
+    const data = req.body.transaction;
+
+    connection.connect()
+    connection.query("CALL calificarCliente(?,?)",[data.id_solicitud, data.calif_cli], (err, result) => {
+        utilComun.errResult(res,err,result,200,200);
+    });
+}
+
+
+
 module.exports = {
 	createSolicitud,
     getSolicitudes,
     obtainSolicitud,
     changeSolicitudState,
-    getNotifications
+    getNotifications,
+    rateService,
+    rateClient
 }

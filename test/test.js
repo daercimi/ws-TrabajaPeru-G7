@@ -565,12 +565,11 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(500);
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-         /* connection.connect()
+          connection.connect()
           connection.query("CALL testRestore(?,?,?);",[test1.us_correo,test2.us_id,test2.cat_id],(err,result)=>{
           console.log(" BD Restaurada: \n",result);
           return;
-        });*/
+        });
 
         done();
       })
