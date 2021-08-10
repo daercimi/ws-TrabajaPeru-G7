@@ -11,9 +11,6 @@ const userOperation = function(req, res) {
         case "SEARCH_USER":         
             utilUser.searchUser(req, res);
             break;
-        case "RATE_USER": //Calificar usuario
-            utilUser.rateUser(req, res);
-            break;
         case "GET_HOME_USERS": //PARA EL HOME, los 10 más recientes usuarios
             utilUser.getHomeUsers(res);
             break;
