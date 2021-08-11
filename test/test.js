@@ -299,6 +299,10 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':'Información de usuario modificada correctamente'
+        });
         done();
       })
     })
@@ -310,11 +314,14 @@ describe("PRUEBAS DEL BACK", () => {
       .send({
           command:"OBTAIN_USER",
           transaction:{
-            us_id: "1",  
+            us_id: test2.us_id,  
           }
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
@@ -352,6 +359,9 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"FAILED"
+        });
         done();
       })
     })
@@ -371,6 +381,9 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
@@ -384,6 +397,9 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
@@ -402,6 +418,9 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS"
+        });
         done();
       })
     })
@@ -418,6 +437,10 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':'Servicio eliminado correctamente'
+        });
         done();
       })
     })
@@ -436,6 +459,9 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS"
+        });
         done();
       })
     })
@@ -454,6 +480,10 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':'Servicio editado correctamente'
+        });
         done();
       })
     })
@@ -467,6 +497,9 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })

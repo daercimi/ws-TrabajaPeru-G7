@@ -28,18 +28,7 @@ function errResult(res, err, result,cod_err,cod_success){
     }         
 }
 
-function ObjectResponse(params) {
-    return {
-        "code": params[0],
-        "status": params[1],
-        "message": params[2],
-        "Response": params[3]
-    }
-
-}
-
 module.exports = {
-    ObjectResponse,
     resFailed,
     sendResult,
     errResult
