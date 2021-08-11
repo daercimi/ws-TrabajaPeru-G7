@@ -1,9 +1,12 @@
 const server = require("../index");
 const auth = require("../middleware/auth")
+
 const serviceAuth = require("../controllers/serviceAuth.js");
 const service = require("../controllers/service.js"); 
 const user = require("../controllers/user.js");
 const userAuth = require("../controllers/userAuth.js");
+const solicitudAuth = require("../controllers/solicitudAuth.js");
+
 const dbConnection = require("../connect");
 const connection = dbConnection();
 const services = require("../services/index")
@@ -44,14 +47,7 @@ var test_tkn1 = "";
 var test_tkn2 = "";
 
 //////////////////////////////////////
-
-connection.connect()
-connection.query("SELECT us_id FROM Usuario WHERE us_id = 100;",(err,result)=>{
-  if(err == null){
-    const usr = result[0];
-    test_tkn2 = 'bearer ' + services.createToken(usr);
-  }
-});
+  test_tkn2 = 'bearer ' + services.createToken(test2);
 /////////////////////////////////
 
 describe("PRUEBAS DEL BACK", () => {
@@ -124,7 +120,7 @@ describe("PRUEBAS DEL BACK", () => {
       })
     })
 
-  });
+});
 
 
   describe("PRUEBAS DE CONTROLADORES DE USUARIOS", () => {
@@ -213,8 +209,7 @@ describe("PRUEBAS DEL BACK", () => {
       .end(function (err, response){
         expect(response).to.have.status(200);
         expect(response).to.nested.include({
-          'body.status':"SUCCESS",
-          'body.message':"Búsqueda existosa"
+          'body.status':"SUCCESS"
         });
         done();
       })
@@ -286,18 +281,11 @@ describe("PRUEBAS DEL BACK", () => {
       })
     })
 
-    connection.connect()
-    connection.query("SELECT us_id FROM Usuario WHERE us_correo = ?;",[test1.us_correo],(err,result)=>{
-      if(err == null){
-        const usr = result[0];
-        test_tkn1 = 'bearer ' + services.createToken(usr);
-      }
-    });  
 
     it("Prueba del comando EDIT_USER" , function(done){
       chai.request(server)
       .post("/user-auth",auth,userAuth)
-      .set('authorization',test_tkn1)
+      .set('authorization',test_tkn2)
       .send({
           command:"EDIT_USER",
           transaction:{
@@ -311,6 +299,10 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':'Información de usuario modificada correctamente'
+        });
         done();
       })
     })
@@ -322,16 +314,19 @@ describe("PRUEBAS DEL BACK", () => {
       .send({
           command:"OBTAIN_USER",
           transaction:{
-            us_id: "1",  
+            us_id: test2.us_id,  
           }
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
 
-    it("Prueba del comando por default user-auth" , function(done){
+    it("Prueba del comando por default" , function(done){
       chai.request(server)
       .post("/user-auth",auth,userAuth)
       .set('authorization',test_tkn2)
@@ -343,25 +338,11 @@ describe("PRUEBAS DEL BACK", () => {
         done();
       })
     })
-
-    it("Prueba del comando por default user" , function(done){
-      chai.request(server)
-      .post("/user",user)
-      .send({
-        command : "Cualquier comando",
-      })
-      .end(function (err, response){
-        expect(response).to.have.status(500);
-        done();
-      })
-    })
     
   })
-    
-  
   /////////////////////////////////////////////////////////////////////////////
 
-  describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
+describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
 
   describe("Pruebas a serviceAuth", () => {
 
@@ -378,6 +359,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"FAILED"
+        });
         done();
       })
     })
@@ -397,6 +381,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
@@ -410,6 +397,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
@@ -428,6 +418,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS"
+        });
         done();
       })
     })
@@ -444,6 +437,10 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':'Servicio eliminado correctamente'
+        });
         done();
       })
     })
@@ -462,6 +459,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS"
+        });
         done();
       })
     })
@@ -480,6 +480,10 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).to.nested.include({
+          'body.status':"SUCCESS",
+          'body.message':'Servicio editado correctamente'
+        });
         done();
       })
     })
@@ -493,6 +497,9 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
         done();
       })
     })
@@ -565,12 +572,6 @@ describe("PRUEBAS DEL BACK", () => {
       })
       .end(function (err, response){
         expect(response).to.have.status(500);
-          connection.connect()
-          connection.query("CALL testRestore(?,?,?);",[test1.us_correo,test2.us_id,test2.cat_id],(err,result)=>{
-          console.log(" BD Restaurada: \n",result);
-          return;
-        });
-
         done();
       })
     })
@@ -580,132 +581,110 @@ describe("PRUEBAS DEL BACK", () => {
 
   })
 
-  describe("PRUEBAS DE CONTROLADORES DE SOLICITUDES", () => {
-
-    describe("Pruebas de solicitud-auth" , () => {
-
-      it("Prueba del comando CREATE_SOLICITUD" , function(done){
-        chai.request(server)
-        .post("/solicitud-auth",auth,serviceAuth)
-        .set('authorization',test_tkn2)
-        .send({
-            command:"CREATE_SOLICITUD",
-            transaction: {
-              us_id_cliente: 1,
-              us_id_trabajador: 100,
-              cat_id: 2,
-              sol_mensaje: "Enviada"
-            }
-        })
-        .end(function (err, response){
-          expect(response).to.have.status(200);
-          done();
-        })
-      })
-
-      it("Prueba del comando GET_SOLICITUDES" , function(done){
-        chai.request(server)
-        .post("/solicitud-auth",auth,serviceAuth)
-        .set('authorization',test_tkn2)
-        .send({
-            command:"GET_SOLICITUDES",
-            transaction: {
-              us_id: 100
-            }
-        })
-        .end(function (err, response){
-          expect(response).to.have.status(200);
-          done();
-        })
-      })
-
-      it("Prueba del comando OBTAIN_SOLICITUD" , function(done){
-        chai.request(server)
-        .post("/solicitud-auth",auth,serviceAuth)
-        .set('authorization',test_tkn2)
-        .send({
-            command:"OBTAIN_SOLICITUD",
-            transaction: {
-              sol_id: 1
-            }
-        })
-        .end(function (err, response){
-          expect(response).to.have.status(200);
-          done();
-        })
-      })
-
-      it("Prueba del comando CHANGE_SOLICITUD_STATE" , function(done){
-        chai.request(server)
-        .post("/solicitud-auth",auth,serviceAuth)
-        .set('authorization',test_tkn2)
-        .send({
-            command:"CHANGE_SOLICITUD_STATE",
-            transaction: {
-              sol_id: 1,
-              sol_estado: "Completada"
-            }
-        })
-        .end(function (err, response){
-          expect(response).to.have.status(200);
-          done();
-        })
-      })
-
-      it("Prueba del comando GET_NOTIFICATIONS" , function(done){
-        chai.request(server)
-        .post("/solicitud-auth",auth,serviceAuth)
-        .set('authorization',test_tkn2)
-        .send({
-            command:"GET_NOTIFICATIONS",
-            transaction: {
-              us_id: 100
-            }
-        })
-        .end(function (err, response){
-          expect(response).to.have.status(200);
-          done();
-        })
-      })
-
-      it("Prueba de comando por defecto" , function(done){
-        chai.request(server)
-        .post("/solicitud-auth",auth,serviceAuth)
-        .set('authorization',test_tkn2)
-        .send({
-            command:"CUALQUIER_COMANDO"
-        })
-        .end(function (err, response){
-          expect(response).to.have.status(500);
-          done();
-        })
-      })
-
+describe("PRUEBAS DE CONTROLADORES DE SOLICITUD", ()=>{
+  it("Prueba del comando CREATE_SOLICITUD" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"CREATE_SOLICITUD",
+        transaction: {
+          us_id_cliente: test2.us_id,
+          us_id_trabajador: test2.us_id,
+          cat_id: 2,
+          sol_mensaje: "Enviada"
+        }
     })
-
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
   })
 
-  /*describe("RESETEO DE PRUEBAS", () => {
-
-    it("Reseteo de datos modificados por las pruebas" , function(done){
-      chai.request(server)
-      .post("/service",service)
-      .send({
-          command:"CUALQUIER_COMANDO"
-      })
-      .end(function (err, response){
-        expect(response).to.have.status(500);
-
-          connection.connect()
-          connection.query("CALL testRestore(?,?,?);",[test1.us_correo,test2.us_id,test2.cat_id],(err,result)=>{
-          console.log(" BD Restaurada: \n",result);
-          return;
-        });
-
-        done();
-      })
+  it("Prueba del comando GET_SOLICITUDES" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"GET_SOLICITUDES",
+        transaction: {
+          us_id: test2.us_id
+        }
     })
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
+  })
 
-  })*/
+  it("Prueba del comando OBTAIN_SOLICITUD" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"OBTAIN_SOLICITUD",
+        transaction: {
+          sol_id: 4
+        }
+    })
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
+  })
+
+  it("Prueba del comando CHANGE_SOLICITUD_STATE" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"CHANGE_SOLICITUD_STATE",
+        transaction: {
+          sol_id: 4,
+          sol_estado: "Completada"
+        }
+    })
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
+  })
+
+  it("Prueba del comando GET_NOTIFICATIONS" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"GET_NOTIFICATIONS",
+        transaction: {
+          us_id: test2.us_id
+        }
+    })
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
+  })
+
+  it("Prueba de comando por defecto" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"CUALQUIER_COMANDO"
+    })
+    .end(function (err, response){
+      expect(response).to.have.status(500);
+
+      connection.connect()
+      connection.query("CALL testRestore(?,?,?);",[test1.us_correo,test2.us_id,test2.cat_id],(err,result)=>{
+        console.log(" BD Restaurada: \n");
+      });
+
+      done();
+    })
+  })
 })
 
+
+})
