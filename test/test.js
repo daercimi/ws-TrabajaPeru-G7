@@ -265,6 +265,18 @@ describe("PRUEBAS DEL BACK", () => {
       })
     })
 
+    it("Prueba del comando por default" , function(done){
+      chai.request(server)
+      .post("/user",user)
+      .send({
+          command:"CUALQUIER_COMANDO"
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(500);
+        done();
+      })
+    })
+
     it("Prueba del comando GET_MY_USER" , function(done){
       chai.request(server)
       .post("/user-auth",auth,userAuth)
