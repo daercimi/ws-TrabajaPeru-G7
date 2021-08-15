@@ -19,6 +19,14 @@ var solicitudOperation = function(req,res) {
             utilSolicitud.obtainSolicitud(req,res);
             break;
 
+        case "GET_MY_SOLICITUDES":
+            utilSolicitud.getMySolicitudes(us_id,res);
+            break;
+
+        case "OBTAIN_MY_SOLICITUD":
+            utilSolicitud.obtainMySolicitud(req,res);
+            break;
+
         case "CHANGE_SOLICITUD_STATE":
             utilSolicitud.changeSolicitudState(req,res);
             break;
