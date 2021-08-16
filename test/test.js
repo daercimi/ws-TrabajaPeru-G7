@@ -762,6 +762,8 @@ describe("PRUEBAS DE CONTROLADORES DE SOLICITUD", ()=>{
     })
     .end(function (err, response){
       expect(response).to.have.status(500);
+
+      connection.connect()
       connection.query("CALL testRestore(?,?,?);",[test1.us_correo,test2.us_id,test2.cat_id],(err,result)=>{
         console.log(" BD Restaurada: \n");
       });
