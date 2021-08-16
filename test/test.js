@@ -416,6 +416,22 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
     })
 
+    it("Prueba del comando GET_NOT_MY_SERVICES" , function(done){
+      chai.request(server)
+      .post("/service-auth",auth,serviceAuth)
+      .set('authorization',test_tkn2)
+      .send({
+          command:"GET_NOT_MY_SERVICES",
+      })
+      .end(function (err, response){
+        expect(response).to.have.status(200);
+        expect(response).not.to.nested.include({
+          'body.status':"FAILED"
+        })
+        done();
+      })
+    })
+
     it("Prueba del comando CREATE_SERVICE existente" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
@@ -618,10 +634,20 @@ describe("PRUEBAS DE CONTROLADORES DE SOLICITUD", ()=>{
     .post("/solicitud-auth",auth,solicitudAuth)
     .set('authorization',test_tkn2)
     .send({
-        command:"GET_SOLICITUDES",
-        transaction: {
-          us_id: test2.us_id
-        }
+        command:"GET_SOLICITUDES"
+    })
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
+  })
+
+  it("Prueba del comando GET_MY_SOLICITUDES" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"GET_MY_SOLICITUDES"
     })
     .end(function (err, response){
       expect(response).to.have.status(200);
@@ -645,6 +671,21 @@ describe("PRUEBAS DE CONTROLADORES DE SOLICITUD", ()=>{
     })
   })
 
+  it("Prueba del comando OBTAIN_MY_SOLICITUD" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"OBTAIN_MY_SOLICITUD",
+        transaction: {
+          sol_id: 4
+        }
+    })
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
+  })
   it("Prueba del comando CHANGE_SOLICITUD_STATE" , function(done){
     chai.request(server)
     .post("/solicitud-auth",auth,solicitudAuth)
@@ -670,6 +711,40 @@ describe("PRUEBAS DE CONTROLADORES DE SOLICITUD", ()=>{
         command:"GET_NOTIFICATIONS",
         transaction: {
           us_id: test2.us_id
+        }
+    })
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
+  })
+
+  it("Prueba del comando RATE_SERVICE" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"RATE_SERVICE",
+        transaction: {
+          id_solicitud:4,
+          calif_tra:3
+        }
+    })
+    .end(function (err, response){
+      expect(response).to.have.status(200);
+      done();
+    })
+  })
+
+  it("Prueba del comando RATE_CLIENT" , function(done){
+    chai.request(server)
+    .post("/solicitud-auth",auth,solicitudAuth)
+    .set('authorization',test_tkn2)
+    .send({
+        command:"RATE_CLIENT",
+        transaction: {
+          id_solicitud:4,
+          calif_cli:3
         }
     })
     .end(function (err, response){

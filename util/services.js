@@ -120,6 +120,21 @@ function getMyServices(us_id,res){
     });
 }
 
+function getNotMyServices(us_id,res){
+
+    connection.connect();
+    connection.query("CALL getNotMyServices(?);;",[us_id], (err,result) => {
+        let numReg = result[0].length;
+
+        for(i=0 ; i<numReg; i++){
+            if(result[0][i].ser_calificacion == null){
+                result[0][i].ser_calificacion = 0;
+            }
+        }
+        utilComun.errResult(res, err,result,200,200);       
+    });
+}
+
 function getCategories(us_id,res){
 
     connection.connect();
@@ -138,5 +153,6 @@ module.exports = {
     editService,
     deleteService,
     getMyServices,
+    getNotMyServices,
     obtainService
 }

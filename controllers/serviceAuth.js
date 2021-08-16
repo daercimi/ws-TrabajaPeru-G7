@@ -22,6 +22,10 @@ var serviceOperation = function(req,res) {
             utilServices.getMyServices(us_id,res);
             break;
 
+        case "GET_NOT_MY_SERVICES":
+            utilServices.getNotMyServices(us_id,res);
+            break;
+
         case "GET_CATEGORIES":
             utilServices.getCategories(us_id, res);
             break;
