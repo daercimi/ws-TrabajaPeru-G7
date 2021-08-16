@@ -1,4 +1,5 @@
 const serviceUser = require("../util/user")
+const utilComun = require("../util/comun")
 var userOperation = function(req, res) {
     const command = req.body.command;
     switch (command) {
@@ -8,6 +9,10 @@ var userOperation = function(req, res) {
 
         case "GET_MY_USER": 
             serviceUser.getMyUser(req, res);
+            break;
+
+        case "SEARCH": 
+            utilComun.search(req, res);
             break;
 
         case "OBTAIN_USER": //Para obtener el perfil de cualquier usuario
