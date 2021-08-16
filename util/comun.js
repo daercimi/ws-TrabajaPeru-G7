@@ -31,7 +31,7 @@ function errResult(res, err, result,cod_err,cod_success){
 }
 
 function search(req, res) {
-    const text = req.body.transaction.text;
+    const text = req.body.transaction;
     connection.connect()
     connection.query(
         "CALL search(?)",[text],
