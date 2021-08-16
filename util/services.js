@@ -2,7 +2,6 @@ const Servicio = require("../models/Servicios");
 const utilComun = require("./comun");
 const dbConnection = require("../connect");
 const connection = dbConnection();
-const cloudinary = require('cloudinary').v2
 
 function searchService(req, res) {
     const busq = req.body.transaction;
@@ -31,14 +30,9 @@ function obtainService(req,res){
 -----------------
 *****************/
 function createService(req,us_id,res){
+
     const service = req.body.transaction;
     const newServicio = new Servicio(us_id, service);
-    if(req.body.transaction.ser_imagen != null){
-        utilComun.base64_decode(req.body.transaction.ser_imagen,"./ws-TrabajaPeru-G7/images/Service.jpg")
-        cloudinary.uploader.upload("./ws-TrabajaPeru-G7/images/Service.jpg", function(error, result) { 
-            newServicio.ser_imagen = result.url
-        });
-    }
     connection.query("CALL serviceExistance(?,?);",[newServicio.us_id,newServicio.cat_nombre], (err,result) =>{
         if (err) {
             return utilComun.resFailed(res, err,200) 
