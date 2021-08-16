@@ -27,9 +27,36 @@ function errResult(res, err, result,cod_err,cod_success){
         return sendResult(res,result, cod_success);
     }         
 }
+function search(req, res) {
+    const text = req.body.transaction;
+    connection.connect()
+    connection.query(
+        "CALL search(?)",[text],
+        (err, result) => {
+            if (err) {
+                return utilComun.resFailed(res,err,200);
+            } else {
+                if (result[0].length == 0 ){
+                    return res.status(200).send({
+                        status: "SUCCESS",
+                        message: "No se encontraron resultados",
+                        resultado: result[0],
+                    });
+                }
+                return res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Búsqueda existosa",
+                    resultado: result[0],
+                });
+                
+            }
+        }
+    );
+}
 
 module.exports = {
     resFailed,
     sendResult,
-    errResult
+    errResult,
+    search
 }

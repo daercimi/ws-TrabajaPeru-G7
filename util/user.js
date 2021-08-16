@@ -102,7 +102,6 @@ function searchUser(req, res) {
 }
 
 function getHomeUsers(res) {
-
     connection.connect()
     connection.query(
         "CALL getHomeUsers();",
