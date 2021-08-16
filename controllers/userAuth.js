@@ -13,6 +13,9 @@ var userOperation = function(req, res) {
         case "OBTAIN_USER": //Para obtener el perfil de cualquier usuario
             serviceUser.obtainUser(req,res);
         break;
+        case "SEARCH":
+            serviceUser.search(req, res);
+            break;
 
         default:
             return res.status(500).send({

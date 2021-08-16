@@ -50,7 +50,6 @@ function registerUser(req, res) {
     const newUsuario = new Usuario(user);
 
     bcrypt.hash(newUsuario.us_contrasena, saltRounds).then((hash) => {
-        connection.connect()
         connection.query(
         "CALL registerUser(?,?,?,?,?,?,?,?)" , [newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash, newUsuario.us_imagen],
             (err, result) => {
@@ -76,7 +75,6 @@ function registerUser(req, res) {
 
 function searchUser(req, res) {
     const userName = req.body.transaction;
-    connection.connect()
     connection.query(
         "CALL searchUser(?)",[userName],
         (err, result) => {
@@ -100,10 +98,33 @@ function searchUser(req, res) {
         }
     );
 }
+function search(req, res) {
+    const text = req.body.transaction;
+    connection.query(
+        "CALL search(?)",[text],
+        (err, result) => {
+            if (err) {
+                return utilComun.resFailed(res,err,200);
+            } else {
+                if (result[0].length == 0 ){
+                    return res.status(200).send({
+                        status: "SUCCESS",
+                        message: "No se encontraron resultados",
+                        resultado: result[0],
+                    });
+                }
+                return res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Búsqueda existosa",
+                    resultado: result[0],
+                });
+                
+            }
+        }
+    );
+}
 
 function getHomeUsers(res) {
-
-    connection.connect()
     connection.query(
         "CALL getHomeUsers();",
         (err, result) => {
@@ -114,7 +135,6 @@ function getHomeUsers(res) {
 
 function getMyUser(req,res) {
     const user = req.user.response.payload;
-    connection.connect()
     connection.query(
         "CALL getMyUser(?);", [user],
         (err,result) => {
@@ -125,7 +145,6 @@ function getMyUser(req,res) {
 
 function obtainUser(req,res) {
     const user = req.body.transaction;
-    connection.connect()
     connection.query(
         "CALL obtainUser(?);", [user.us_id],
         (err,result) => {
@@ -137,7 +156,6 @@ function obtainUser(req,res) {
 function editUser(req,res) {
     const user = req.user.response.payload;
     const newUsuario = new Usuario(req.body.transaction);
-    connection.connect()
     connection.query(
         "CALL editUser(?,?,?,?,?,?,?);",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, newUsuario.us_imagen, user],
         (err, result) => {
@@ -162,5 +180,6 @@ module.exports = {
 	getHomeUsers,
     obtainUser,
     editUser,
-    getMyUser
+    getMyUser,
+    search
 }
