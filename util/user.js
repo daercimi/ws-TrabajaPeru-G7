@@ -50,7 +50,6 @@ function registerUser(req, res) {
     const newUsuario = new Usuario(user);
 
     bcrypt.hash(newUsuario.us_contrasena, saltRounds).then((hash) => {
-        connection.connect()
         connection.query(
         "CALL registerUser(?,?,?,?,?,?,?,?)" , [newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_correo, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, hash, newUsuario.us_imagen],
             (err, result) => {
@@ -76,7 +75,6 @@ function registerUser(req, res) {
 
 function searchUser(req, res) {
     const userName = req.body.transaction;
-    connection.connect()
     connection.query(
         "CALL searchUser(?)",[userName],
         (err, result) => {
@@ -127,7 +125,6 @@ function search(req, res) {
 }
 
 function getHomeUsers(res) {
-    connection.connect()
     connection.query(
         "CALL getHomeUsers();",
         (err, result) => {
@@ -138,7 +135,6 @@ function getHomeUsers(res) {
 
 function getMyUser(req,res) {
     const user = req.user.response.payload;
-    connection.connect()
     connection.query(
         "CALL getMyUser(?);", [user],
         (err,result) => {
@@ -149,7 +145,6 @@ function getMyUser(req,res) {
 
 function obtainUser(req,res) {
     const user = req.body.transaction;
-    connection.connect()
     connection.query(
         "CALL obtainUser(?);", [user.us_id],
         (err,result) => {
@@ -161,7 +156,6 @@ function obtainUser(req,res) {
 function editUser(req,res) {
     const user = req.user.response.payload;
     const newUsuario = new Usuario(req.body.transaction);
-    connection.connect()
     connection.query(
         "CALL editUser(?,?,?,?,?,?,?);",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, newUsuario.us_imagen, user],
         (err, result) => {
