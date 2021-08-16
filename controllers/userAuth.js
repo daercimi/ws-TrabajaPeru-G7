@@ -1,5 +1,4 @@
 const serviceUser = require("../util/user")
-const serviceComun = require("../util/comun")
 var userOperation = function(req, res) {
     const command = req.body.command;
     switch (command) {
@@ -15,7 +14,7 @@ var userOperation = function(req, res) {
             serviceUser.obtainUser(req,res);
         break;
         case "SEARCH":
-            serviceComun.search(req, res);
+            serviceUser.search(req, res);
             break;
 
         default:
