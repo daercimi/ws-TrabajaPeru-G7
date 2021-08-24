@@ -35,7 +35,7 @@ var serviceOperation = function(req,res) {
             break;
         
         case "OBTAIN_SERVICE":
-            utilServices.obtainService(req,res);
+            utilServices.obtainService(us_id,req,res);
             break;
             
         default:

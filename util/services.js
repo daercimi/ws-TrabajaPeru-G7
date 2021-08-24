@@ -20,13 +20,18 @@ function getHomeServices(res){
     });
 }
 
-function obtainService(req,res){
+function obtainService(us_id,req,res){
     const data = req.body.transaction;
-    connection.connect();
-    connection.query("CALL obtainService(?,?);",[data.us_id,data.cat_id],(err, result) =>{
-        utilComun.errResult(res,err,result,200,200);      
-    });
-
+    
+    if(us_id == data.us_id){
+        utilComun.resFailed(res,"El usuario es el mismo", 405)
+    }
+    else{
+        connection.connect();
+        connection.query("CALL obtainService(?,?);",[data.us_id,data.cat_id],(err, result) =>{
+            utilComun.errResult(res,err,result,200,200);      
+        });
+    }
 }
 
 /****************
