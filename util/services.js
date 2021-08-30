@@ -35,7 +35,7 @@ function obtainService(us_id,req,res){
 ------AUTH-------
 -----------------
 *****************/
-function createService(req,us_id,res){
+async function createService(req,us_id,res){
 
     const service = req.body.transaction;
     const newServicio = new Servicio(us_id, service);
