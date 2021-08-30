@@ -6,7 +6,6 @@ const connection = dbConnection();
 const utilComun = require("./comun");
 const services = require("../services/index")
 const utilConstant = require("./constant");
-const { util } = require("chai");
 
 function loginUser(req, res) {
     const newUsuario = new Usuario(req.body.transaction);
