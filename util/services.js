@@ -39,6 +39,9 @@ function createService(req,us_id,res){
 
     const service = req.body.transaction;
     const newServicio = new Servicio(us_id, service);
+    if(req.body.transaction.ser_imagen != null){
+        newServicio.ser_imagen = await utilComun.uploadImage(service.ser_imagen)
+}
     connection.connect();
     connection.query("CALL serviceExistance(?,?);",[newServicio.us_id,newServicio.cat_nombre], (err,result) =>{
         if (err) {
