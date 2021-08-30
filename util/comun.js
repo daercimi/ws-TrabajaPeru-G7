@@ -17,15 +17,20 @@ function resFailed(res, err, cod ){
     })
 }
 
-function uploadImage(req,res){
-    if(req.ser_imagen != null){
-        base64_decode(req.ser_imagen,__dirname + "/../images/Service.jpg")
-        cloudinary.uploader.upload(__dirname + "/images/Service.jpg", function(error, result) { 
-            if(result){
-                return result.url                
-            }
-        });
-    }
+function uploadImage(req){
+    return new Promise(resolve => {
+        setTimeout(() => {
+          cloudinary.uploader.upload(req, function(error, result){
+                if(error){
+                    console.log(error)
+                }else{
+                    console.log(result.url)
+                    resolve(result.url);
+                    
+                }
+            });
+        }, 1000);
+      });
 }
 function base64_decode(base64str, file) {
     // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
@@ -85,5 +90,7 @@ module.exports = {
     resFailed,
     sendResult,
     errResult,
-    search
+    search,
+    base64_decode,
+    uploadImage
 }

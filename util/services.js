@@ -74,8 +74,11 @@ function createService(req,us_id,res){
     })
 }
 
-function editService(req,us_id,res){
+async function editService(req,us_id,res){
     const service = req.body.transaction;
+    if(req.body.transaction.ser_imagen != null){
+            service.ser_imagen = await utilComun.uploadImage(service.ser_imagen)
+    }
     connection.connect();
     connection.query("CALL editService(?,?,?,?);", [us_id,service.cat_id,service.ser_descripcion, service.ser_imagen], (err, result) =>{
         if (err) {
