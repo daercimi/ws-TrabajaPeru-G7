@@ -20,8 +20,9 @@ function getHomeServices(res){
     });
 }
 
-function obtainService(req,res){
+function obtainService(us_id,req,res){
     const data = req.body.transaction;
+
     connection.connect();
     connection.query("CALL obtainService(?,?);",[data.us_id,data.cat_id],(err, result) =>{
         utilComun.errResult(res,err,result,200,200);      
@@ -109,9 +110,40 @@ function getMyServices(us_id,res){
 
     connection.connect();
     connection.query("CALL getMyServices(?);;",[us_id], (err,result) => {
-        let numReg = result[0].length;
+        const numReg = result[0].length;
 
-        for(i=0 ; i<numReg; i++){
+        for(let i=0 ; i<numReg; i++){
+            if(result[0][i].ser_calificacion == null){
+                result[0][i].ser_calificacion = 0;
+            }
+        }
+        utilComun.errResult(res, err,result,200,200);       
+    });
+}
+
+function getOthersServices(req,res){
+
+    data = req.body.transaction;
+    connection.connect();
+    connection.query("CALL getMyServices(?);;",[data.us_id], (err,result) => {
+        const numReg = result[0].length;
+
+        for(let i=0 ; i<numReg; i++){
+            if(result[0][i].ser_calificacion == null){
+                result[0][i].ser_calificacion = 0;
+            }
+        }
+        utilComun.errResult(res, err,result,200,200);       
+    });
+}
+
+function getNotMyServices(us_id,res){
+
+    connection.connect();
+    connection.query("CALL getNotMyServices(?);;",[us_id], (err,result) => {
+        const numReg = result[0].length;
+
+        for(let i=0 ; i<numReg; i++){
             if(result[0][i].ser_calificacion == null){
                 result[0][i].ser_calificacion = 0;
             }
@@ -138,5 +170,7 @@ module.exports = {
     editService,
     deleteService,
     getMyServices,
+    getOthersServices,
+    getNotMyServices,
     obtainService
 }

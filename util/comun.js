@@ -2,6 +2,8 @@
 const fs = require('fs');
 const config = require('../GlobalEnv');
 const helper = require('sendgrid').mail;
+const dbConnection = require("../connect");
+const connection = dbConnection();
 
 //Función para mandar error
 function resFailed(res, err, cod ){
@@ -35,19 +37,36 @@ function errResult(res, err, result,cod_err,cod_success){
     }         
 }
 
-function ObjectResponse(params) {
-    return {
-        "code": params[0],
-        "status": params[1],
-        "message": params[2],
-        "Response": params[3]
-    }
+function search(req, res) {
+    const text = req.body.transaction;
+    connection.connect()
+    connection.query(
+        "CALL search(?)",[text],
+        (err, result) => {
+            if (err) {
+                return resFailed(res,err,200);
+            } else {
+                if (result[0].length == 0 ){
+                    return res.status(200).send({
+                        status: "SUCCESS",
+                        message: "No se encontraron resultados",
+                        resultado: result[0],
+                    });
+                }
+                return res.status(200).send({
+                    status: "SUCCESS",
+                    message: "Búsqueda existosa",
+                    resultado: result[0],
+                });
 
+            }
+        }
+    );
 }
 
 module.exports = {
-    ObjectResponse,
     resFailed,
     sendResult,
-    errResult
+    errResult,
+    search
 }
