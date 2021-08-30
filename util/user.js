@@ -137,6 +137,11 @@ function obtainUser(req,res) {
 function editUser(req,res) {
     const user = req.user.response.payload;
     const newUsuario = new Usuario(req.body.transaction);
+    if(req.body.transaction.ser_imagen != null){
+        utilComun.base64_decode(req.body.transaction.ser_imagen,"./ws-TrabajaPeru-G7/images/Service.jpg")
+        
+            newServicio.ser_imagen = result.url
+    }
     connection.connect()
     connection.query(
         "CALL editUser(?,?,?,?,?,?,?);",[newUsuario.us_nombres,newUsuario.us_celular, newUsuario.us_departamento,newUsuario.us_provincia,newUsuario.us_distrito, newUsuario.us_imagen, user],

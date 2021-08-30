@@ -4,6 +4,8 @@ const config = require('../GlobalEnv');
 const helper = require('sendgrid').mail;
 const dbConnection = require("../connect");
 const connection = dbConnection();
+const cloudinary = require("cloudinary").v2;
+const path = require("path");
 
 //Función para mandar error
 function resFailed(res, err, cod ){
@@ -15,13 +17,28 @@ function resFailed(res, err, cod ){
     })
 }
 
-function uploadImage(path, res ){
-    cloudinary.uploader.upload(path ,
-    function(error, result) {
-        console.log(result)
-    });
+function uploadImage(req,res){
+    if(req.ser_imagen != null){
+        base64_decode(req.ser_imagen,__dirname + "/../images/Service.jpg")
+        cloudinary.uploader.upload(__dirname + "/images/Service.jpg", function(error, result) { 
+            if(result){
+                return result.url                
+            }
+        });
+    }
 }
-
+function base64_decode(base64str, file) {
+    // create buffer object from base64 encoded string, it is important to tell the constructor that the string is base64 encoded
+    let mime = base64str.match(/data:([a-zA-Z0-9]+\/[a-zA-Z0-9-.+]+).*,.*/);
+    if (mime && mime.length) {
+        // Delete base64 identificator from String
+        base64str = base64str.replace(`data:${mime[1]};base64,`, '');
+    }
+    var bitmap = new Buffer.from(base64str, 'base64');
+    // write buffer to file
+    fs.writeFileSync(file, bitmap);
+    console.log('******** File created from base64 encoded string ********');
+}
 //Función para mandar resultado
 function sendResult(res,result,cod){
    return res.status(cod).send(result[0]); 
