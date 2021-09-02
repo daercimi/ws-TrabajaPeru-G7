@@ -3,6 +3,25 @@ const utilComun = require("./comun");
 const dbConnection = require("../connect");
 const connection = dbConnection();
 
+/*
+var express = require('express');
+var app =  express();
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
+app.use(express.static('public'));
+
+io.on('connection', function(socket){ //escucha
+    console.log('Alguien se ha conectado con Socket');
+
+    //emitimos mensaje
+    //nombre del evento: messages, objeto: {}
+    socket.emit('messages', {
+        id:1,
+        text: "Hola soy un mensaje"
+    })
+})
+*/
+
 function createSolicitud(us_id,req, res) {
     const request = req.body.transaction;
     const newSolicitud = new Solicitud(us_id, request);
@@ -11,6 +30,9 @@ function createSolicitud(us_id,req, res) {
     connection.query("CALL createSolicitud(?,?,?,?)",[newSolicitud.us_id_cliente, newSolicitud.us_id_trabajador, newSolicitud.cat_id, newSolicitud.sol_mensaje], (err, result) => {
         utilComun.errResult(res,err,result,200,200);
     });
+
+    
+
 }
 
 function getSolicitudes(us_id, res) {
