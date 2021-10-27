@@ -127,7 +127,7 @@ function obtainUser(req,res) {
     const user = req.body.transaction;
     connection.connect()
     connection.query(
-        "CALL obtainUser(?);", [user.us_id],
+        "CALL obtainUser(?);", [user.us_correo],
         (err,result) => {
             utilComun.errResult(res,err,result,200,200);
         }
