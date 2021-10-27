@@ -131,7 +131,7 @@ function getOthersServices(req,res){
 
     data = req.body.transaction;
     connection.connect();
-    connection.query("CALL getServicesByEmail(?);;",[data.us_correo], (err,result) => {
+    connection.query("CALL getMyServices(?);;",[data.us_id], (err,result) => {
         const numReg = result[0].length;
 
         for(let i=0 ; i<numReg; i++){
