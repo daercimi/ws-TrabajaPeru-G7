@@ -12,15 +12,17 @@ function createSolicitud(us_id,req, res) {
         utilComun.errResult(res,err,result,200,200);
     });
 }
-
-function getSolicitudes(us_id, res) {
+/**
+ * 
+ */
+function getSolicitudes(us_id, res) { //Usuario como trabajador
     connection.connect()
     connection.query("CALL getSolicitudes(?)",[us_id], (err, result) => {
         utilComun.errResult(res,err,result,200,200);
     });
 }
 
-function obtainSolicitud(req, res) {
+function obtainSolicitud(req, res) { //Solicitud donde usuario es trabajador
     const data = req.body.transaction;
     
     connection.connect()
@@ -29,14 +31,14 @@ function obtainSolicitud(req, res) {
     });
 }
 
-function getMySolicitudes(us_id, res) {
+function getMySolicitudes(us_id, res) { //Usuario como cliente
     connection.connect()
-    connection.query("CALL getSolicitudes(?)",[us_id], (err, result) => {
+    connection.query("CALL getMySolicitudes(?)",[us_id], (err, result) => {
         utilComun.errResult(res,err,result,200,200);
     });
 }
 
-function obtainMySolicitud(req, res) {
+function obtainMySolicitud(req, res) { //Solicitud donde usuario es cliente
     const data = req.body.transaction;
     
     connection.connect()
@@ -44,7 +46,9 @@ function obtainMySolicitud(req, res) {
         utilComun.errResult(res,err,result,200,200);
     });
 }
-
+/**
+ * 
+ */
 function changeSolicitudState(req, res) {
     const data = req.body.transaction;
     

@@ -11,19 +11,19 @@ var solicitudOperation = function(req,res) {
             utilSolicitud.createSolicitud(us_id,req,res);
             break;
 
-        case "GET_SOLICITUDES":
+        case "GET_SOLICITUDES": //Usuario como trabajador
             utilSolicitud.getSolicitudes(us_id,res);
             break;
 
-        case "OBTAIN_SOLICITUD":
+        case "OBTAIN_SOLICITUD": //Solicitud donde usuario es trabajador
             utilSolicitud.obtainSolicitud(req,res);
             break;
 
-        case "GET_MY_SOLICITUDES":
+        case "GET_MY_SOLICITUDES"://Usuario como cliente
             utilSolicitud.getMySolicitudes(us_id,res);
             break;
 
-        case "OBTAIN_MY_SOLICITUD":
+        case "OBTAIN_MY_SOLICITUD": //Solicitud donde usuario es cliente
             utilSolicitud.obtainMySolicitud(req,res);
             break;
 
