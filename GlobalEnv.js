@@ -13,8 +13,8 @@ module.exports = {
     database: process.env.DATABASE || "sql10446806",
     TOKEN_SECRET: process.env.TOKEN_SECRET || "trabajaperu-access",
     //cloudinary vars
-    cloud_name: process.env.CLOUD_NAME || "trabaja-peru",
-    api_key: process.env.API_KEY || "655682455259227",
-    api_secret: process.env.API_SECRET || "jGB0CZQ5KMa3F-pBwR6WOfZWOEA"
+    cloud_name: process.env.CLOUD_NAME || "chambeafisi",
+    api_key: process.env.API_KEY || "748141351746755",
+    api_secret: process.env.API_SECRET || "2vh-kiFggGxcBD2-tQGiQi5pi8g"
 
 }; 

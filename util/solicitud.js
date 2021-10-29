@@ -12,9 +12,7 @@ function createSolicitud(us_id,req, res) {
         utilComun.errResult(res,err,result,200,200);
     });
 }
-/**
- * 
- */
+
 function getSolicitudes(us_id, res) { //Usuario como trabajador
     connection.connect()
     connection.query("CALL getSolicitudes(?)",[us_id], (err, result) => {
@@ -46,9 +44,7 @@ function obtainMySolicitud(req, res) { //Solicitud donde usuario es cliente
         utilComun.errResult(res,err,result,200,200);
     });
 }
-/**
- * 
- */
+
 function changeSolicitudState(req, res) {
     const data = req.body.transaction;
     
