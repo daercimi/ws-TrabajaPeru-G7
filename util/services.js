@@ -63,11 +63,13 @@ async function createService(req,us_id,res){
                             });
                         }
                     });
+                    break;
                 case 1:
                     return res.status(200).send({
                         status: "SUCCESS",
                         message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " ya existe, no se permiten duplicados."
                     });
+                    break;
                 case 2:
                     connection.query("CALL recoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_nombre, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
                         if (err2) {
@@ -80,6 +82,7 @@ async function createService(req,us_id,res){
                             });
                         }
                     });
+                    break;
             }
         }
     })
