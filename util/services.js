@@ -56,10 +56,12 @@ async function createService(req,us_id,res){
                         if (err2) {
                             return utilComun.resFailed(res, err2,200)  
                         }
-                    });
-                    return res.status(200).send({
-                        status: "SUCCESS",
-                        message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " creado correctamente."
+                        else{
+                            return res.status(200).send({
+                                status: "SUCCESS",
+                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " creado correctamente."
+                            });
+                        }
                     });
                 case 1:
                     return res.status(200).send({
@@ -71,10 +73,12 @@ async function createService(req,us_id,res){
                         if (err2) {
                             return utilComun.resFailed(res, err2,200)  
                         }
-                    });
-                    return res.status(200).send({
-                        status: "SUCCESS",
-                        message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " reestablecido correctamente."
+                        else{
+                            return res.status(200).send({
+                                status: "SUCCESS",
+                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " reestablecido correctamente."
+                            });
+                        }
                     });
             }
         }
