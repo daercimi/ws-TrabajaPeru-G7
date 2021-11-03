@@ -49,41 +49,30 @@ async function createService(req,us_id,res){
         }
         else {
             var existencia = result[0][0].existe;
-
-            switch (existencia){
-                case 0:
-                    connection.query("CALL createService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_nombre, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
-                        if (err2) {
-                            return utilComun.resFailed(res, err2,200)  
-                        }
-                        else{
+            connection.query("CALL createOrRecoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_nombre, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
+                if (err2) {
+                    return utilComun.resFailed(res, err2,200)  
+                }
+                else {
+                    switch (existencia){
+                        case 0:
                             return res.status(200).send({
                                 status: "SUCCESS",
                                 message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " creado correctamente."
                             });
-                        }
-                    });
-                    break;
-                case 1:
-                    return res.status(200).send({
-                        status: "SUCCESS",
-                        message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " ya existe, no se permiten duplicados."
-                    });
-                    break;
-                case 2:
-                    connection.query("CALL recoverService(?, ?, ?, ?);", [newServicio.us_id,newServicio.cat_nombre, newServicio.ser_descripcion, newServicio.ser_imagen],(err2, result2)=>{
-                        if (err2) {
-                            return utilComun.resFailed(res, err2,200)  
-                        }
-                        else{
+                        case 1:
+                            return res.status(200).send({
+                                status: "SUCCESS",
+                                message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " ya existe, no se permiten duplicados."
+                            });
+                        case 2:
                             return res.status(200).send({
                                 status: "SUCCESS",
                                 message: "Servicio de usuario " + newServicio.us_id + " de categoria " + newServicio.cat_nombre + " reestablecido correctamente."
                             });
-                        }
-                    });
-                    break;
-            }
+                    }
+                }
+            })
         }
     })
 }
