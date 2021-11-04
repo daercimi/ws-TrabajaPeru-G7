@@ -6,6 +6,7 @@ module.exports = {
     port: process.env.PORT || 4000,
     portdb: process.env.PORTDB || 3306,             
     //portdb:3306,
+    //freemysql
     userDb: process.env.USERDB || "sql10448614",        
     //userDb: "root",
     passwordDb: process.env.PASSWORDDB || "qNZlcTiYfT",     
