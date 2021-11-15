@@ -143,20 +143,6 @@ function getOthersServices(req,res){
     });
 }
 
-function getNotMyServices(us_id,res){
-
-    connection.connect();
-    connection.query("CALL getNotMyServices(?);;",[us_id], (err,result) => {
-        const numReg = result[0].length;
-
-        for(let i=0 ; i<numReg; i++){
-            if(result[0][i].ser_calificacion == null){
-                result[0][i].ser_calificacion = 0;
-            }
-        }
-        utilComun.errResult(res, err,result,200,200);       
-    });
-}
 
 function getCategories(us_id,res){
 
@@ -177,6 +163,5 @@ module.exports = {
     deleteService,
     getMyServices,
     getOthersServices,
-    getNotMyServices,
     obtainService
 }

@@ -365,8 +365,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       .send({
           command:"CREATE_SERVICE",
           transaction: {
-            ser_descripcion: "test",
-            ser_imagen: "link"
+            ser_descripcion: "test"
           }
       })
       .end(function (err, response){
@@ -387,8 +386,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
           command:"CREATE_SERVICE",
           transaction: {
             cat_nombre: test2.cat_nombre,
-            ser_descripcion: "test",
-            ser_imagen: "link"
+            ser_descripcion: "test"
           }
       })
       .end(function (err, response){
@@ -416,22 +414,6 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
       })
     })
 
-    it("Prueba del comando GET_NOT_MY_SERVICES" , function(done){
-      chai.request(server)
-      .post("/service-auth",auth,serviceAuth)
-      .set('authorization',test_tkn2)
-      .send({
-          command:"GET_NOT_MY_SERVICES",
-      })
-      .end(function (err, response){
-        expect(response).to.have.status(200);
-        expect(response).not.to.nested.include({
-          'body.status':"FAILED"
-        })
-        done();
-      })
-    })
-
     it("Prueba del comando CREATE_SERVICE existente" , function(done){
       chai.request(server)
       .post("/service-auth",auth,serviceAuth)
@@ -440,8 +422,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
           command:"CREATE_SERVICE",
           transaction: {
             cat_nombre: "Carpintería",
-            ser_descripcion: "test",
-            ser_imagen: "link"
+            ser_descripcion: "test"
           }
       })
       .end(function (err, response){
@@ -481,8 +462,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
           command:"CREATE_SERVICE",
           transaction: {
             cat_nombre: "Cocina",
-            ser_descripcion: "test",
-            ser_imagen: "link"
+            ser_descripcion: "test"
           }
       })
       .end(function (err, response){
@@ -502,8 +482,7 @@ describe("PRUEBAS DE CONTROLADORES DE SERVICIOS", () => {
           command:"EDIT_SERVICE",
           transaction: {
             cat_id:1,
-            ser_descripcion: "test descripcion editada",
-            ser_imagen: "test link editado"
+            ser_descripcion: "test descripcion editada"
           }
       })
       .end(function (err, response){
